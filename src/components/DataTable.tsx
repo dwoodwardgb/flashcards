@@ -1,4 +1,4 @@
-import { createSignal, Show, For, createEffect, onMount } from "solid-js";
+import { createSignal, For, createEffect, onMount } from "solid-js";
 import { Word, WordForm } from "./WordForm";
 import { EditableDataCell } from "./DataTableCell";
 
