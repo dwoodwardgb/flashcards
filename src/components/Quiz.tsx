@@ -1,7 +1,7 @@
 import { createSignal, Show, For, onMount } from "solid-js";
 import { Word } from "./WordForm";
 
-function randomComparator<T>(a: T, b: T): number {
+function randomComparator<T>(_a: T, _b: T): number {
   return Math.random() >= 0.5 ? 1 : -1;
 }
 
@@ -46,10 +46,8 @@ export function Quiz({}) {
   }
 
   return (
-    <article>
-      <Show when={index() >= sortedWords().length}>
-        All finished, your score:
-      </Show>
+    <>
+      <Show when={index() >= sortedWords().length}>Complete!</Show>
       <Show when={index() >= 0 && index() < sortedWords().length}>
         <form
           onSubmit={(event) => {
@@ -103,6 +101,6 @@ export function Quiz({}) {
           </button>
         </form>
       </Show>
-    </article>
+    </>
   );
 }

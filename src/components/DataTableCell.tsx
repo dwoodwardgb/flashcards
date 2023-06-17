@@ -1,7 +1,13 @@
 import { createSignal, Show } from "solid-js";
+import { debounce } from "@solid-primitives/scheduled";
 
-export function EditableDataCell({ data }) {
+export function EditableDataCell({ data, setData }) {
   const [editing, setEditing] = createSignal(false);
+
+  const onInputChange = debounce((event: any) => {
+    setData(event?.target?.value);
+  }, 700);
+
   return (
     <Show
       when={editing()}
@@ -21,6 +27,7 @@ export function EditableDataCell({ data }) {
       <input
         type="text"
         value={data}
+        onChange={onInputChange}
         class="w-full p-1"
         onKeyUp={(e) => {
           if (e.key === "Escape") {

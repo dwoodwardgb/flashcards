@@ -10,7 +10,7 @@ export function DataTable() {
   });
 
   createEffect(() => {
-    if (window) {
+    if (window && words()) {
       window?.localStorage.setItem("words", JSON.stringify(words()));
     }
   });
@@ -31,13 +31,58 @@ export function DataTable() {
               {(w) => (
                 <tr>
                   <td class="border border-solid border-black p-1">
-                    <EditableDataCell data={w.traditional} />
+                    <EditableDataCell
+                      data={w.traditional}
+                      setData={(data) => {
+                        const ws = [...words()];
+                        const i = ws.indexOf(w);
+                        if (i < 0) {
+                          return;
+                        }
+                        const newWord = { ...w };
+
+                        newWord.traditional = data;
+
+                        ws[i] = newWord;
+                        setWords(ws);
+                      }}
+                    />
                   </td>
                   <td class="border border-solid border-black p-1">
-                    <EditableDataCell data={w.pinyin} />
+                    <EditableDataCell
+                      data={w.pinyin}
+                      setData={(data) => {
+                        const ws = [...words()];
+                        const i = ws.indexOf(w);
+                        if (i < 0) {
+                          return;
+                        }
+                        const newWord = { ...w };
+
+                        newWord.pinyin = data;
+
+                        ws[i] = newWord;
+                        setWords(ws);
+                      }}
+                    />
                   </td>
                   <td class="border border-solid border-black p-1">
-                    <EditableDataCell data={w.english} />
+                    <EditableDataCell
+                      data={w.english}
+                      setData={(data) => {
+                        const ws = [...words()];
+                        const i = ws.indexOf(w);
+                        if (i < 0) {
+                          return;
+                        }
+                        const newWord = { ...w };
+
+                        newWord.english = data;
+
+                        ws[i] = newWord;
+                        setWords(ws);
+                      }}
+                    />
                   </td>
                 </tr>
               )}
