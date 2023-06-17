@@ -21,3 +21,11 @@
 .excel-like-form > *:nth-child(1) {
   border-left: solid 1px black;
 }
+
+.inline {
+  display: inline;
+}
+
+.block {
+  display: block;
+}

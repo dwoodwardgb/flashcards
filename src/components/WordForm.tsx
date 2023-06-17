@@ -14,8 +14,10 @@ export function WordForm({ onNewWord }: { onNewWord: (w: Word) => void }) {
         const elements = event.target["elements"];
         for (let i = 0; i < elements.length; i += 1) {
           const field = elements[i];
-          data[field.name] = field.value;
-          field.value = "";
+          if (field.name) {
+            data[field.name] = field.value;
+            field.value = "";
+          }
         }
         onNewWord(data as Word);
       }}

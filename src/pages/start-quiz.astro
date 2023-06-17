@@ -1,5 +1,5 @@
 ---
-import { DataTable } from "../components/DataTable";
+import { QuizForm } from "../components/QuizForm";
 ---
 
 <html lang="en">
@@ -8,13 +8,13 @@ import { DataTable } from "../components/DataTable";
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <title>My data</title>
+    <title>Words</title>
     <link rel="stylesheet" href="/global.css" />
   </head>
   <body>
     <main>
-      <h1 class="text-2xl">My data</h1>
-      <DataTable client:load />
+      <h1 class="text-2xl">Start a Quiz</h1>
+      <QuizForm client:load />
     </main>
   </body>
 </html>
