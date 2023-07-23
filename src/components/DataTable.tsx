@@ -17,9 +17,9 @@ export const Words = Object.freeze({
       .map((line) => {
         const [a, b, c] = line.split(",");
         return {
-          traditional: a,
-          pinyin: b,
-          english: c,
+          traditional: a.trim(),
+          pinyin: b.trim(),
+          english: c.trim(),
         };
       });
   },

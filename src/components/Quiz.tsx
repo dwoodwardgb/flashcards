@@ -24,7 +24,7 @@ function checkWord(expected: Word, actual: Partial<Word>): undefined | string {
   return undefined;
 }
 
-export function Quiz({}) {
+export function Quiz() {
   const [words, setWords] = createSignal<Word[]>([]);
   const [index, setIndex] = createSignal<number>(0);
   const [config, setConfig] = createSignal<
