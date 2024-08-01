@@ -16,7 +16,7 @@ function getQuizConfigFromQueryParams() {
 function checkWord(expected: Word, actual: Partial<Word>): undefined | string {
   for (let k of Object.keys(actual)) {
     if (actual[k]) {
-      if (actual[k].trim() !== expected[k]) {
+      if (actual[k].trim().toLowerCase() !== expected[k].trim().toLowerCase()) {
         return "Incorrect!";
       }
     }
