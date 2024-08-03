@@ -1,4 +1,4 @@
-import { createSignal, Show, For, onMount } from "solid-js";
+import { createSignal, Show, For, onMount, createMemo } from "solid-js";
 import { Word } from "./WordForm";
 
 function randomComparator<T>(_a: T, _b: T): number {
@@ -39,11 +39,11 @@ export function Quiz() {
     setConfig(getQuizConfigFromQueryParams());
   });
 
-  function sortedWords() {
+  const sortedWords = createMemo(() => {
     const list = [...words()];
     list.sort(randomComparator);
     return list;
-  }
+  });
 
   return (
     <>
