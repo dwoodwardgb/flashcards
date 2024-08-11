@@ -39,14 +39,19 @@
           <td class="">{{ .English }}</td>
           <td class="">
             <form method="post" action="/delete" class="inline">
-              <input type="hidden" />
+              <input type="hidden" name="english" value="{{ .English }}" />
               <button type="submit" class="py-1 px-2 border rounded-md text-xs">
                 Delete
               </button>
             </form>
 
-            <form method="post" action="/edit" class="inline ml-4">
-              <input type="hidden" />
+            <form
+              id="edit-{{ .English }}"
+              method="post"
+              action="/edit"
+              class="inline ml-4"
+            >
+              <input type="hidden" name="english" value="{{ .English }}" />
               <button type="submit" class="py-1 px-2 border rounded-md text-xs">
                 Edit
               </button>

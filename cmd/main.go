@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"fmt"
 	"html/template"
 	"io"
 	"os"
@@ -62,11 +63,10 @@ type Word struct {
 	English     string
 }
 
-// TODO: consider moving away from a pointer
-func readWords(logger *echo.Logger) ([]Word, error) {
+func readWords() ([]Word, error) {
 	file, err := os.Open("words.csv")
 	if err != nil {
-		(*logger).Error("Could not open words csv", err)
+		fmt.Println("readWords: Could not open words csv", err)
 		return nil, err
 	}
 	defer file.Close()
@@ -81,7 +81,7 @@ func readWords(logger *echo.Logger) ([]Word, error) {
 			break
 		}
 		if err != nil {
-			(*logger).Error("Could not parse words csv: ", err)
+			fmt.Println("Could not parse words csv: ", err)
 			return nil, err
 		}
 		if len(record) != 3 {
@@ -94,6 +94,39 @@ func readWords(logger *echo.Logger) ([]Word, error) {
 	return words, nil
 }
 
+func writeWords(words []Word) error {
+	file, err := os.Create("words.csv")
+	if err != nil {
+		fmt.Println("writeWords: Could not open words csv", err)
+		return err
+	}
+	defer file.Close()
+
+	csvWriter := csv.NewWriter(file)
+
+	row := []string{"", "", ""}
+	for _, word := range words {
+		row[0] = word.Traditional
+		row[1] = word.Pinyin
+		row[2] = word.English
+
+		err := csvWriter.Write(row)
+		if err != nil {
+			fmt.Println("Could not write CSV", err)
+			return err
+		}
+	}
+
+	csvWriter.Flush()
+	err = csvWriter.Error()
+	if err != nil {
+		fmt.Println("Could not flush CSV", err)
+		return err
+	}
+
+	return nil
+}
+
 func main() {
 
 	server := echo.New()
@@ -104,7 +137,7 @@ func main() {
 	server.Static("/css", "css")
 
 	server.GET("/", func(c echo.Context) error {
-		words, err := readWords(&server.Logger)
+		words, err := readWords()
 		if err != nil {
 			words = []Word{}
 		}
@@ -112,6 +145,37 @@ func main() {
 		data := NewData(words)
 
 		return c.Render(200, "index.html", NewPageData(*data, NewFormData()))
+	})
+
+	server.POST("/delete", func(ctx echo.Context) error {
+		englishName := ctx.FormValue("english")
+
+		words, err := readWords()
+		if err != nil {
+			ctx.Logger().Error("POST /delete: could not read words", err)
+			// TODO: figure out a proper error page / message
+			return ctx.String(500, "Internal Server Error!")
+		}
+
+		deleted := false
+		for i, word := range words {
+			if word.English == englishName {
+				// TODO: figure out why we need "..."
+				words = append(words[0:i], words[i+1:]...)
+				deleted = true
+			}
+		}
+
+		if deleted {
+			err = writeWords(words)
+			if err != nil {
+				ctx.Logger().Error("POST /delete: could not write words", err)
+				// TODO: figure out a proper error page / message
+				return ctx.String(500, "Internal Server Error!")
+			}
+		}
+
+		return ctx.Redirect(302, "/")
 	})
 
 	// server.POST("/contacts", func(c echo.Context) error {
