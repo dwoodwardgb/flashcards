@@ -34,9 +34,33 @@
           <td class="">
             <input type="checkbox" form="new-quiz" />
           </td>
-          <td class="">{{ .Traditional }}</td>
-          <td class="">{{ .Pinyin }}</td>
-          <td class="">{{ .English }}</td>
+          <td class="">
+            <input
+              form="edit-{{ .English }}"
+              type="text"
+              name="traditional"
+              value="{{ .Traditional }}"
+              class="border"
+            />
+          </td>
+          <td class="">
+            <input
+              form="edit-{{ .English }}"
+              type="text"
+              name="pinyin"
+              value="{{ .Pinyin }}"
+              class="border"
+            />
+          </td>
+          <td class="">
+            <input
+              form="edit-{{ .English }}"
+              type="text"
+              name="english"
+              value="{{ .English }}"
+              class="border"
+            />
+          </td>
           <td class="">
             <form method="post" action="/delete" class="inline">
               <input type="hidden" name="english" value="{{ .English }}" />
@@ -51,7 +75,7 @@
               action="/edit"
               class="inline ml-4"
             >
-              <input type="hidden" name="english" value="{{ .English }}" />
+              <input type="hidden" name="id" value="{{ .English }}" />
               <button type="submit" class="py-1 px-2 border rounded-md text-xs">
                 Edit
               </button>

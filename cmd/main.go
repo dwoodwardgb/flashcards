@@ -178,6 +178,41 @@ func main() {
 		return ctx.Redirect(302, "/")
 	})
 
+	server.POST("/edit", func(ctx echo.Context) error {
+		englishName := ctx.FormValue("id")
+
+		words, err := readWords()
+		if err != nil {
+			ctx.Logger().Error("POST /edit: could not read words", err)
+			// TODO: figure out a proper error page / message
+			return ctx.String(500, "Internal Server Error!")
+		}
+
+		updated := false
+		for i, word := range words {
+			if word.English == englishName {
+				// need the index because word is a copy
+				words[i].Traditional = ctx.FormValue("traditional")
+				words[i].Pinyin = ctx.FormValue("pinyin")
+				words[i].English = ctx.FormValue("english")
+				updated = true
+			}
+		}
+
+		if updated {
+			err = writeWords(words)
+			if err != nil {
+				ctx.Logger().Error("POST /edit: could not write words", err)
+				// TODO: figure out a proper error page / message
+				return ctx.String(500, "Internal Server Error!")
+			}
+		} else {
+			return ctx.String(404, "Unknown word")
+		}
+
+		return ctx.Redirect(302, "/")
+	})
+
 	// server.POST("/contacts", func(c echo.Context) error {
 	// 	name := c.FormValue("name")
 	// 	email := c.FormValue("email")
