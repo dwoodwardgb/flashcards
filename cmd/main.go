@@ -1,10 +1,13 @@
 package main
 
 import (
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"encoding/csv"
 	"html/template"
 	"io"
+	"os"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type Template struct {
@@ -22,10 +25,11 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 }
 
 type Data struct {
+	Words []Word
 }
 
-func NewData() *Data {
-	return &Data{}
+func NewData(words []Word) *Data {
+	return &Data{Words: words}
 }
 
 type FormData struct {
@@ -52,11 +56,47 @@ func NewPageData(data Data, form FormData) PageData {
 	}
 }
 
+type Word struct {
+	Traditional string
+	Pinyin      string
+	English     string
+}
+
+// TODO: consider moving away from a pointer
+func readWords(logger *echo.Logger) ([]Word, error) {
+	file, err := os.Open("words.csv")
+	if err != nil {
+		(*logger).Error("Could not open words csv", err)
+		return nil, err
+	}
+	defer file.Close()
+
+	csvReader := csv.NewReader(file)
+	csvReader.ReuseRecord = true
+
+	words := []Word{}
+	for {
+		record, err := csvReader.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			(*logger).Error("Could not parse words csv: ", err)
+			return nil, err
+		}
+		if len(record) != 3 {
+			panic("CSV line with wrong number of columns, panicking...")
+		}
+
+		words = append(words, Word{record[0], record[1], record[2]})
+	}
+
+	return words, nil
+}
+
 func main() {
 
 	server := echo.New()
-
-	data := NewData()
 
 	server.Renderer = newTemplate()
 	server.Use(middleware.Logger())
@@ -64,7 +104,14 @@ func main() {
 	server.Static("/css", "css")
 
 	server.GET("/", func(c echo.Context) error {
-		return c.Render(200, "index.html.tmpl", NewPageData(*data, NewFormData()))
+		words, err := readWords(&server.Logger)
+		if err != nil {
+			words = []Word{}
+		}
+
+		data := NewData(words)
+
+		return c.Render(200, "index.html", NewPageData(*data, NewFormData()))
 	})
 
 	// server.POST("/contacts", func(c echo.Context) error {

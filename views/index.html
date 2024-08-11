@@ -6,9 +6,9 @@
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="css/index.css" />
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/index.css" />
     <script
       src="https://unpkg.com/htmx.org@2.0.1"
       integrity="sha384-QWGpdj554B4ETpJJC9z+ZHJcA/i59TyjxEPXiiUgN2WmTyV5OEZWCD6gQhgkdpB/"
@@ -16,5 +16,44 @@
     ></script>
   </head>
 
-  <body></body>
+  <body>
+    <h1 class="text-3xl">Words</h1>
+
+    <form id="new-quiz" method="post" action="/quiz">
+      <label>
+        <input type="checkbox" />
+        Select All
+      </label>
+
+      <button type="submit" class="p-2 m-2 border rounded-md">New Quiz</button>
+    </form>
+
+    <table class="border-separate border-spacing-4 text-lg">
+      {{ range .Data.Words }}
+        <tr>
+          <td class="">
+            <input type="checkbox" form="new-quiz" />
+          </td>
+          <td class="">{{ .Traditional }}</td>
+          <td class="">{{ .Pinyin }}</td>
+          <td class="">{{ .English }}</td>
+          <td class="">
+            <form method="post" action="/delete" class="inline">
+              <input type="hidden" />
+              <button type="submit" class="py-1 px-2 border rounded-md text-xs">
+                Delete
+              </button>
+            </form>
+
+            <form method="post" action="/edit" class="inline ml-4">
+              <input type="hidden" />
+              <button type="submit" class="py-1 px-2 border rounded-md text-xs">
+                Edit
+              </button>
+            </form>
+          </td>
+        </tr>
+      {{ end }}
+    </table>
+  </body>
 </html>
