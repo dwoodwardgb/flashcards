@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"io"
 	"os"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -27,10 +28,11 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 
 type Data struct {
 	Words []Word
+	Flash string
 }
 
-func NewData(words []Word) *Data {
-	return &Data{Words: words}
+func NewData(words []Word, flash string) *Data {
+	return &Data{Words: words, Flash: flash}
 }
 
 type FormData struct {
@@ -61,6 +63,32 @@ type Word struct {
 	Traditional string
 	Pinyin      string
 	English     string
+}
+
+type Quiz struct {
+	Id int
+	// TODO: migrate to enums
+	From  []string
+	To    []string
+	Words []Word
+}
+
+var nextQuizId int = 0
+var quizzes []Quiz
+
+// TODO: session storage or real SQL persistence
+// TODO: what if this runs out of memory or the id counter overflows???
+// TODO: make thread safe
+func NewQuiz(from []string, to []string, words []Word) *Quiz {
+	nextQuizId += 1
+	quiz := Quiz{
+		Id:    (nextQuizId - 1),
+		From:  from,
+		To:    to,
+		Words: words,
+	}
+	quizzes = append(quizzes, quiz)
+	return &quiz
 }
 
 func readWords() ([]Word, error) {
@@ -142,7 +170,7 @@ func main() {
 			words = []Word{}
 		}
 
-		data := NewData(words)
+		data := NewData(words, "")
 
 		return c.Render(200, "index.html", NewPageData(*data, NewFormData()))
 	})
@@ -207,10 +235,64 @@ func main() {
 				return ctx.String(500, "Internal Server Error!")
 			}
 		} else {
+			// TODO: maybe a flash message?
 			return ctx.String(404, "Unknown word")
 		}
 
 		return ctx.Redirect(302, "/")
+	})
+
+	server.POST("/quiz/new", func(ctx echo.Context) error {
+		err := ctx.Request().ParseForm()
+		if err != nil {
+			// TODO: maybe a flash message?
+			return ctx.String(400, "bad request")
+		}
+
+		// TODO: validate all of these?
+		from := ctx.Request().PostForm["from"]
+		to := ctx.Request().PostForm["to"]
+		wordKeys := ctx.Request().PostForm["words"]
+
+		allWords, err := readWords()
+		if err != nil {
+			ctx.Logger().Error("POST /delete: could not read words", err)
+			// TODO: figure out a proper error page / message
+			return ctx.String(500, "Internal Server Error!")
+		}
+
+		words := []Word{}
+		for _, key := range wordKeys {
+			for _, word := range allWords {
+				if key == word.English {
+					words = append(words, word)
+				}
+			}
+		}
+
+		quiz := NewQuiz(from, to, words)
+
+		return ctx.Redirect(302, fmt.Sprintf("/quiz/%d", quiz.Id))
+	})
+
+	server.GET("/quiz/:id", func(ctx echo.Context) error {
+		id, err := strconv.Atoi(ctx.Param("id"))
+		if err != nil {
+			return ctx.String(400, "Bad id param")
+		}
+
+		var quiz *Quiz = nil
+		for i := range quizzes {
+			if id == quizzes[i].Id {
+				quiz = &quizzes[i]
+				break
+			}
+		}
+		if quiz == nil {
+			return ctx.String(400, fmt.Sprintf("Unknown quiz id: %d", id))
+		}
+
+		return ctx.Render(200, "quiz.html", quiz)
 	})
 
 	// server.POST("/contacts", func(c echo.Context) error {

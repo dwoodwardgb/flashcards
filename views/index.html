@@ -19,11 +19,30 @@
   <body>
     <h1 class="text-3xl">Words</h1>
 
-    <form id="new-quiz" method="post" action="/quiz">
+    <form id="new-quiz" method="post" action="/quiz/new">
       <label>
-        <input type="checkbox" />
-        Select All
+        From
+        <select multiple name="from">
+          <option>Traditional</option>
+          <option>Pinyin</option>
+          <option>English</option>
+        </select>
       </label>
+
+      <label>
+        To
+        <select multiple name="to">
+          <option>Traditional</option>
+          <option>Pinyin</option>
+          <option>English</option>
+        </select>
+      </label>
+
+      <!-- include as progressive enhancement -->
+      <!-- <label>
+        <input type="checkbox" checked />
+        Select All
+      </label> -->
 
       <button type="submit" class="p-2 m-2 border rounded-md">New Quiz</button>
     </form>
@@ -32,7 +51,13 @@
       {{ range .Data.Words }}
         <tr>
           <td class="">
-            <input type="checkbox" form="new-quiz" />
+            <input
+              type="checkbox"
+              form="new-quiz"
+              name="words"
+              value="{{ .English }}"
+              checked
+            />
           </td>
           <td class="">
             <input
