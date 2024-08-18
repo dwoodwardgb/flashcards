@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flashcards for learning Mandarin</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/htmx.org@2.0.1"
+    integrity="sha384-QWGpdj554B4ETpJJC9z+ZHJcA/i59TyjxEPXiiUgN2WmTyV5OEZWCD6gQhgkdpB/"
+    crossorigin="anonymous"></script>
+
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+
+<body>
+  <h1 class="text-3xl">Words</h1>
+
+  <form id="new-quiz" method="post" action="/quizes/new">
+    {{ csrfField() }}
+    <label>
+      From
+      <select multiple name="from">
+        <option>Traditional</option>
+        <option>Pinyin</option>
+        <option>English</option>
+      </select>
+    </label>
+
+    <label>
+      To
+      <select multiple name="to">
+        <option>Traditional</option>
+        <option>Pinyin</option>
+        <option>English</option>
+      </select>
+    </label>
+
+    <!-- include as progressive enhancement -->
+    <!-- <label>
+      <input type="checkbox" checked />
+      Select All
+    </label> -->
+
+    <button type="submit" class="p-2 m-2 border rounded-md">New Quiz</button>
+  </form>
+
+  <table class="border-separate border-spacing-4 text-lg">
+    @each(word in words)
+    <tr>
+      <td class="">
+        <input type="checkbox" form="new-quiz" name="words" value="{{ word.id }}" checked />
+      </td>
+      <td class="">
+        <input form="edit-{{ word.id }}" type="text" name="traditional" value="{{ word.traditional }}" class="border" />
+      </td>
+      <td class="">
+        <input form="edit-{{ word.id }}" type="text" name="pinyin" value="{{ word.pinyin }}" class="border" />
+      </td>
+      <td class="">
+        <input form="edit-{{ word.id }}" type="text" name="english" value="{{ word.english }}" class="border" />
+      </td>
+      <td class="">
+        <form method="post" action="/words/delete" class="inline">
+          {{ csrfField() }}
+          <input type="hidden" name="id" value="{{ word.id }}" />
+          <button type="submit" class="py-1 px-2 border rounded-md text-xs">
+            Delete
+          </button>
+        </form>
+
+        <form id="edit-{{ word.id }}" method="post" action="/words/edit" class="inline ml-4">
+          {{ csrfField() }}
+          <input type="hidden" name="id" value="{{ word.id }}" />
+          <button type="submit" class="py-1 px-2 border rounded-md text-xs">
+            Edit
+          </button>
+        </form>
+      </td>
+    </tr>
+    @end
+    <tr>
+      <td class="">
+      </td>
+      <td class="">
+        <input form="create-word" type="text" name="traditional" value="" class="border" />
+      </td>
+      <td class="">
+        <input form="create-word" type="text" name="pinyin" value="" class="border" />
+      </td>
+      <td class="">
+        <input form="create-word" type="text" name="english" value="" class="border" />
+      </td>
+      <td>
+        <form id="create-word" method="post" action="/words/create" class="inline">
+          {{ csrfField() }}
+          <button type="submit" class="py-1 px-2 border rounded-md text-xs">
+            Add
+          </button>
+        </form>
+      </td>
+    </tr>
+  </table>
+</body>
+
+</html>
