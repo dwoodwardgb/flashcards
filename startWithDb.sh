@@ -15,4 +15,5 @@ if [ ! -d $db_dir ]; then
 fi
 
 node ace.js migration:refresh --force
+# node ace.js db:seed
 node ./bin/server.js

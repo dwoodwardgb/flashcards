@@ -28,3 +28,8 @@ TZ = 'UTC'
 LOG_LEVEL = 'info'
 NODE_ENV = 'production'
 SESSION_DRIVER = 'cookie'
+DATABASE_URL = "/mnt/data/production.sqlite3"
+
+# [mounts]
+# source = "flashcards_data"
+# destination = "/mnt/data"
