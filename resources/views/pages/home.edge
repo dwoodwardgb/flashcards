@@ -16,11 +16,11 @@
 <body>
   <h1 class="text-3xl">Words</h1>
 
-  <form id="new-quiz" method="post" action="/quizes/new">
+  <form id="new-quiz" method="post" action="/quizes/create">
     {{ csrfField() }}
     <label>
       From
-      <select multiple name="from">
+      <select multiple name="from[]" required>
         <option>Traditional</option>
         <option>Pinyin</option>
         <option>English</option>
@@ -29,7 +29,7 @@
 
     <label>
       To
-      <select multiple name="to">
+      <select multiple name="to[]" required>
         <option>Traditional</option>
         <option>Pinyin</option>
         <option>English</option>
@@ -79,6 +79,7 @@
       </td>
     </tr>
     @end
+
     <tr>
       <td class="">
       </td>

@@ -7,8 +7,8 @@
   "scripts": {
     "start": "node bin/server.js",
     "build": "node ace build",
-    "dev": "node ace serve --hmr",
-    "debug": "node --inspect ace serve --hmr",
+    "dev": "node ace serve --hmr --clear",
+    "debug": "node ace --inspect serve --hmr --clear",
     "test": "node ace test",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -67,7 +67,8 @@
     "better-sqlite3": "^11.1.2",
     "edge.js": "^6.0.2",
     "luxon": "^3.5.0",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "seedrandom": "^3.0.5"
   },
   "hotHook": {
     "boundaries": [

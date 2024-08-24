@@ -5,6 +5,7 @@ import {
   deleteWordValidator,
   createWordValidator,
 } from '#validators/word_validator'
+import { Exception } from '@adonisjs/core/exceptions'
 
 export default class WordsController {
   async create(ctx: HttpContext) {
@@ -17,9 +18,7 @@ export default class WordsController {
       await word.save()
     } catch (e) {
       ctx.logger.error(e, 'error saving word')
-      ctx.response.status(500)
-      ctx.response.header('Content-Type', 'text/plain')
-      return 'Internal server error'
+      throw new Exception('error saving word', { status: 500 })
     }
 
     ctx.response.redirect('/', false, 302)
@@ -28,24 +27,23 @@ export default class WordsController {
   async edit(ctx: HttpContext) {
     const body = await updateWordValidator.validate(ctx.request.body())
 
+    let affectedRows = 0
     try {
-      const [affectedRows] = await Word.query()
-        .update('traditional', body.traditional)
-        .update('pinyin', body.pinyin)
-        .update('english', body.english)
-        .where('id', body.id)
-        .exec()
-
-      if (affectedRows === 0) {
-        ctx.response.status(404)
-        ctx.response.header('Content-Type', 'text/plain')
-        return 'Unknown word'
-      }
+      affectedRows = (
+        await Word.query()
+          .update('traditional', body.traditional)
+          .update('pinyin', body.pinyin)
+          .update('english', body.english)
+          .where('id', body.id)
+          .exec()
+      )[0]
     } catch (e) {
       ctx.logger.error(e, 'error updating word')
-      ctx.response.status(500)
-      ctx.response.header('Content-Type', 'text/plain')
-      return 'Internal server error'
+      throw new Exception('error updating word', { status: 500 })
+    }
+
+    if (affectedRows === 1) {
+      throw new Exception('Could not find word', { status: 404 })
     }
 
     ctx.response.redirect('/', false, 302)
@@ -58,9 +56,7 @@ export default class WordsController {
       await Word.query().delete().where('id', body.id).exec()
     } catch (e) {
       ctx.logger.error(e, 'error deleting word')
-      ctx.response.status(500)
-      ctx.response.header('Content-Type', 'text/plain')
-      return 'Internal server error'
+      throw new Exception('error deleting word', { status: 500 })
     }
 
     ctx.response.redirect('/', false, 302)
