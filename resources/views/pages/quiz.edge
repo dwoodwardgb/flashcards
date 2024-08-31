@@ -14,7 +14,7 @@
 </head>
 
 <body>
-  <h1 class="text-3xl">Quiz</h1>
+  <h1 class="text-3xl mb-4">Quiz</h1>
 
   @flashMessage('notification')
   <div class="notification {{ $message.type }}" role="alert" aria-live="polite">
@@ -22,7 +22,7 @@
   </div>
   @end
 
-  <form method="post" action="/quizes">
+  <form method="post" action="/quizes" class="">
     {{ csrfField() }}
 
     @if(typeof quiz.words === 'string')

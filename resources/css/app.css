@@ -6,11 +6,16 @@ html,
 body {
   height: 100%;
   width: 100%;
+  @apply bg-white text-black dark:bg-black dark:text-white;
+}
+
+input, select {
+  @apply bg-white dark:bg-black;
 }
 
 .notification.error {
-  color: red;
+  @apply text-red-700;
 }
 .notification.success {
-  color: green;
+  @apply text-green-700;
 }
