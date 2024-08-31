@@ -154,7 +154,10 @@ export default class QuizesController {
 
     // 1. validate answer
     for (let key of quiz.to) {
-      if (quiz[key]?.trim().toLowerCase() !== word[key]?.trim().toLowerCase()) {
+      const expected = (word as any)[key]
+      const actual = (quiz as any)[key]
+      // TODO: compare without accents when comparing pinyin
+      if (actual?.trim().toLowerCase() !== expected?.trim().toLowerCase()) {
         ctx.session.flash('notification', { type: 'error', message: 'Incorrect!' })
         return ctx.response.redirect(`/quizes?${serializeQuizToQueryString(quiz)}`, false, 302)
       }
