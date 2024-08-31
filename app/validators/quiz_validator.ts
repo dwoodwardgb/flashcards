@@ -19,5 +19,8 @@ export const quizValidator = vine.compile(
     words: vine.unionOfTypes([vine.string(), vine.array(vine.number().positive())]),
     seed: vine.string().minLength(1),
     index: vine.number().positive(),
+    traditional: vine.string().trim().toLowerCase().optional(),
+    pinyin: vine.string().trim().toLowerCase().optional(),
+    english: vine.string().trim().toLowerCase().optional(),
   })
 )

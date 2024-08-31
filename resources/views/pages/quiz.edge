@@ -16,7 +16,51 @@
 <body>
   <h1 class="text-3xl">Quiz</h1>
 
-  <pre>{{ dump }}</pre>
+  @flashMessage('notification')
+  <div class="notification {{ $message.type }}" role="alert" aria-live="polite">
+    {{ $message.message }}
+  </div>
+  @end
+
+  <form method="post" action="/quizes">
+    {{ csrfField() }}
+
+    @if(typeof quiz.words === 'string')
+    <input type="hidden" name="words" value="{{quiz.words}}">
+    @else
+
+    @each(word in quiz.words)
+    <input type="hidden" name="words[]" value="{{word}}">
+    @end
+
+    @end
+
+    @each(from in quiz.from)
+    <input type="hidden" name="from[]" value="{{from}}">
+    @end
+    @each(to in quiz.to)
+    <input type="hidden" name="to[]" value="{{to}}">
+    @end
+    <input type="hidden" name="seed" value="{{quiz.seed}}">
+    <input type="hidden" name="index" value="{{quiz.index}}">
+
+    @each(from in quiz.from)
+    <p><span class="capitalize">{{from}}</span>: {{word[from]}}</p>
+    @end
+
+    @each(to in quiz.to)
+    <label>
+      <span class="capitalize">{{to}}</span>
+      <input type="text" name="{{to}}" value="" class="border">
+    </label>
+    @end
+
+    <br>
+
+    <button type="submit" class="p-2 border rounded-md">
+      Next
+    </button>
+  </form>
 </body>
 
 </html>

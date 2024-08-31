@@ -32,3 +32,4 @@ router.post('/words/delete', [WordsController, 'delete'])
 
 router.get('/quizes', [QuizesController, 'show'])
 router.post('/quizes/create', [QuizesController, 'create'])
+router.post('/quizes', [QuizesController, 'update'])

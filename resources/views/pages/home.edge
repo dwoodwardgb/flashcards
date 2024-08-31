@@ -16,23 +16,29 @@
 <body>
   <h1 class="text-3xl">Words</h1>
 
+  @flashMessage('notification')
+  <div class="notification {{ $message.type }}" role="alert" aria-live="polite">
+    {{ $message.message }}
+  </div>
+  @end
+
   <form id="new-quiz" method="post" action="/quizes/create">
     {{ csrfField() }}
     <label>
       From
       <select multiple name="from[]" required>
-        <option>Traditional</option>
-        <option>Pinyin</option>
-        <option>English</option>
+        <option value="traditional">Traditional</option>
+        <option value="pinyin">Pinyin</option>
+        <option value="english">English</option>
       </select>
     </label>
 
     <label>
       To
       <select multiple name="to[]" required>
-        <option>Traditional</option>
-        <option>Pinyin</option>
-        <option>English</option>
+        <option value="traditional">Traditional</option>
+        <option value="pinyin">Pinyin</option>
+        <option value="english">English</option>
       </select>
     </label>
 
