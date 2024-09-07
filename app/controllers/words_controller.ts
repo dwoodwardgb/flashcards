@@ -42,7 +42,7 @@ export default class WordsController {
       throw new Exception('error updating word', { status: 500 })
     }
 
-    if (affectedRows === 1) {
+    if (affectedRows !== 1) {
       throw new Exception('Could not find word', { status: 404 })
     }
 
