@@ -13,7 +13,7 @@
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="">
+<body class="container mx-auto">
   <h1 class="text-3xl mb-4">Words</h1>
 
   @flashMessage('notification')
@@ -51,71 +51,73 @@
     <button type="submit" class="p-2 m-2 border rounded-md">New Quiz</button>
   </form>
 
-  <table class="border-separate border-spacing-y-4 lg:border-spacing-y-6 text-lg">
-    @let(cbCol = "p-2")
-    @let(tradCol = "w-16 md:w-24 lg:w-36")
-    @let(romanCol = "w-24 sm:w-36 md:w-48 lg:w-64")
+  <table class="grid mx-1 grid-cols-[auto_70px_minmax(70px,_1fr)_minmax(70px,_1fr)_auto] gap-y-2 sm:grid-cols-[auto_minmax(70px,_1fr)_minmax(70px,_1.5fr)_minmax(70px,_1.5fr)_auto]">
+    @let(input = "w-full border")
+    @let(actionCol = "overflow-auto whitespace-nowrap")
+    @let(actionItem = "inline-block")
 
-    @each(word in words)
-    <tr>
-      <td class="">
-        <label class="{{cbCol}} inline-flex items-center justify-center cursor-pointer">
-          <input type="checkbox" form="new-quiz" name="words" value="{{ word.id }}" checked class="" />
-        </label>
-      </td>
-      <td class="">
-        <input form="edit-{{ word.id }}" type="text" name="traditional" value="{{ word.traditional }}"
-          class="border {{tradCol}}" />
-      </td>
-      <td class="">
-        <input form="edit-{{ word.id }}" type="text" name="pinyin" value="{{ word.pinyin }}"
-          class="border {{romanCol}}" />
-      </td>
-      <td class="">
-        <input form="edit-{{ word.id }}" type="text" name="english" value="{{ word.english }}"
-          class="border {{romanCol}}" />
-      </td>
-      <td class="flex">
-        <form method="post" action="/words/delete" class="inline mx-1">
-          {{ csrfField() }}
-          <input type="hidden" name="id" value="{{ word.id }}" />
-          <button type="submit" class="py-1 px-2 border rounded-md text-xs">
-            Delete
-          </button>
-        </form>
+    <tbody class="contents">
+      @each(word in words)
+      <tr class="contents">
+        <td class="">
+          <label class="flex items-center justify-center cursor-pointer flex-col h-full w-full pr-1">
+            <input type="checkbox" form="new-quiz" name="words" value="{{ word.id }}" checked class="" />
+          </label>
+        </td>
+        <td class="">
+          <input form="edit-{{ word.id }}" type="text" name="traditional" value="{{ word.traditional }}"
+            class="{{ input }}" />
+        </td>
+        <td class="">
+          <input form="edit-{{ word.id }}" type="text" name="pinyin" value="{{ word.pinyin }}"
+            class="{{ input }}" />
+        </td>
+        <td class="">
+          <input form="edit-{{ word.id }}" type="text" name="english" value="{{ word.english }}"
+            class="{{ input }}" />
+        </td>
+        <td class="{{ actionCol }}">
+          <form method="post" action="/words/delete" class="{{ actionItem }}">
+            {{ csrfField() }}
+            <input type="hidden" name="id" value="{{ word.id }}" />
+            <button type="submit" class="py-1 px-2 border rounded-md text-xs">
+              Delete
+            </button>
+          </form>
 
-        <form id="edit-{{ word.id }}" method="post" action="/words/edit" class="inline mx-1">
-          {{ csrfField() }}
-          <input type="hidden" name="id" value="{{ word.id }}" />
-          <button type="submit" class="py-1 px-2 border rounded-md text-xs">
-            Edit
-          </button>
-        </form>
-      </td>
-    </tr>
-    @end
+          <form id="edit-{{ word.id }}" method="post" action="/words/edit" class="{{ actionItem }}">
+            {{ csrfField() }}
+            <input type="hidden" name="id" value="{{ word.id }}" />
+            <button type="submit" class="py-1 px-2 border rounded-md text-xs">
+              Edit
+            </button>
+          </form>
+        </td>
+      </tr>
+      @end
 
-    <tr>
-      <td class="">
-      </td>
-      <td class="">
-        <input form="create-word" type="text" name="traditional" value="" class="border {{tradCol}}" />
-      </td>
-      <td class="">
-        <input form="create-word" type="text" name="pinyin" value="" class="border {{romanCol}}" />
-      </td>
-      <td class="">
-        <input form="create-word" type="text" name="english" value="" class="border {{romanCol}}" />
-      </td>
-      <td>
-        <form id="create-word" method="post" action="/words/create" class="inline mx-1">
-          {{ csrfField() }}
-          <button type="submit" class="py-1 px-2 border rounded-md text-xs">
-            Add
-          </button>
-        </form>
-      </td>
-    </tr>
+      <tr class="contents">
+        <td class="">
+        </td>
+        <td class="">
+          <input form="create-word" type="text" name="traditional" value="" class="{{ input }}" />
+        </td>
+        <td class="">
+          <input form="create-word" type="text" name="pinyin" value="" class="{{ input }}" />
+        </td>
+        <td class="">
+          <input form="create-word" type="text" name="english" value="" class="{{ input }}" />
+        </td>
+        <td class="{{ actionCol }}">
+          <form id="create-word" method="post" action="/words/create" class="{{ actionItem }}">
+            {{ csrfField() }}
+            <button type="submit" class="py-1 px-2 border rounded-md text-xs">
+              Add
+            </button>
+          </form>
+        </td>
+      </tr>
+    </tbody>
   </table>
 </body>
 
