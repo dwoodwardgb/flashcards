@@ -46,6 +46,7 @@ export default class WordsController {
       throw new Exception('Could not find word', { status: 404 })
     }
 
+    ctx.session.flash('notification', { type: 'success', message: 'Word edited.' })
     ctx.response.redirect('/', false, 302)
   }
 
@@ -59,6 +60,7 @@ export default class WordsController {
       throw new Exception('error deleting word', { status: 500 })
     }
 
+    ctx.session.flash('notification', { type: 'success', message: 'Word removed.' })
     ctx.response.redirect('/', false, 302)
   }
 }
