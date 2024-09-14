@@ -1,0 +1,39 @@
+@let(input = "w-full border")
+@let(actionCol = "overflow-auto whitespace-nowrap")
+@let(actionItem = "inline-block")
+
+<tr hx-target="closest tr" hx-swap="outerHTML"  class="contents">
+  <td class="">
+    <label class="flex items-center justify-center cursor-pointer flex-col h-full w-full pr-1">
+      <input type="checkbox" form="new-quiz" name="words" value="{{ word.id }}" checked class="" />
+    </label>
+  </td>
+  <td class="">
+    <input form="update-{{ word.id }}" type="text" name="traditional" value="{{ word.traditional }}"
+      class="{{ input }}" />
+  </td>
+  <td class="">
+    <input form="update-{{ word.id }}" type="text" name="pinyin" value="{{ word.pinyin }}" class="{{ input }}" />
+  </td>
+  <td class="">
+    <input form="update-{{ word.id }}" type="text" name="english" value="{{ word.english }}" class="{{ input }}" />
+  </td>
+  <td class="{{ actionCol }}">
+    <form method="post" action="/words/delete" hx-delete="/words/{{word.id}}" class="{{ actionItem }}">
+      {{ csrfField() }}
+      <input type="hidden" name="id" value="{{ word.id }}" />
+      <button type="submit" class="py-1 px-2 border rounded-md text-xs">
+        Delete
+      </button>
+    </form>
+
+    <form id="update-{{ word.id }}" method="post" action="/words/update" hx-patch="/words/{{word.id}}"
+      class="{{ actionItem }}">
+      {{ csrfField() }}
+      <input type="hidden" name="id" value="{{ word.id }}" />
+      <button type="submit" class="py-1 px-2 border rounded-md text-xs">
+        Save
+      </button>
+    </form>
+  </td>
+</tr>

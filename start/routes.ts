@@ -26,9 +26,11 @@ router.get('/', async function get(ctx) {
   return ctx.view.render('pages/home', { words })
 })
 
-router.post('/words/create', [WordsController, 'create'])
-router.post('/words/edit', [WordsController, 'edit'])
+router.post('/words/update', [WordsController, 'update'])
+router.patch('/words/:id', [WordsController, 'update'])
 router.post('/words/delete', [WordsController, 'delete'])
+router.delete('/words/:id', [WordsController, 'delete'])
+router.post('/words', [WordsController, 'create'])
 
 router.get('/quizes', [QuizesController, 'show'])
 router.post('/quizes/create', [QuizesController, 'create'])
