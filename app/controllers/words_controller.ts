@@ -51,11 +51,11 @@ export default class WordsController {
       throw new Exception('Could not find word', { status: 404 })
     }
 
-    ctx.session.flash('notification', { type: 'success', message: 'Word edited.' })
-
     if (ctx.request.method() === 'PATCH') {
+      ctx.response.header('x-flash', JSON.stringify({ type: 'success', message: 'Word saved.' }))
       return ctx.view.render('components/word_table_row', { word: body })
     } else {
+      ctx.session.flash('notification', { type: 'success', message: 'Word saved.' })
       ctx.response.redirect('/', false, 302)
     }
   }
@@ -70,10 +70,11 @@ export default class WordsController {
       throw new Exception('error deleting word', { status: 500 })
     }
 
-    ctx.session.flash('notification', { type: 'success', message: 'Word removed.' })
     if (ctx.request.method() === 'DELETE') {
+      ctx.response.header('x-flash', JSON.stringify({ type: 'success', message: 'Word removed.' }))
       ctx.response.status(200).send('')
     } else {
+      ctx.session.flash('notification', { type: 'success', message: 'Word removed.' })
       ctx.response.redirect('/', false, 302)
     }
   }

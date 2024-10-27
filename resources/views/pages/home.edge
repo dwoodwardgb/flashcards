@@ -21,6 +21,8 @@
     {{ $message.message }}
   </div>
   @end
+  <div id="htmx-flash" class="p-2 notification" hidden role="alert" aria-live="polite">
+  </div>
 
   <form id="new-quiz" method="post" action="/quizes/create" class="">
     {{ csrfField() }}
