@@ -117,8 +117,8 @@
                 <artifactId>native-maven-plugin</artifactId>
                 <configuration>
                     <buildArgs>
-                        <arg>--verbose</arg>
-                        <arg>--trace-class-initialization=io.jstach.jstachio.escapers.HtmlEscaper</arg>
+                        <buildArg>--verbose</buildArg>
+                        <buildArg>--trace-class-initialization=io.jstach.jstachio.escapers.HtmlEscaper</buildArg>
 <!--                        <arg>initialize-at-runtime=io.jstach.jstachio.escapers.HtmlEscaper</arg>-->
                     </buildArgs>
                 </configuration>
