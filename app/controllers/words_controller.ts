@@ -119,6 +119,7 @@ export default class WordsController {
         env.get('AUDIO_FILES_DIR'),
         `${word.id.toString().padStart(7, '0')}-${word.traditional}.mp3`
       )
+      await fs.mkdir(env.get('AUDIO_FILES_DIR'), { recursive: true })
       await fs.writeFile(fileUrl, response.audioContent as any, 'binary')
       word.pronunciation_url = fileUrl
       const affectedRows = (
