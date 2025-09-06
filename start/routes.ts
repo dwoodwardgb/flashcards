@@ -26,6 +26,7 @@ router.get('/', async function get(ctx) {
   return ctx.view.render('pages/home', { words })
 })
 
+router.get('/words/:id/audio', [WordsController, 'fetchAudio'])
 router.post('/words/update', [WordsController, 'update'])
 router.patch('/words/:id', [WordsController, 'update'])
 router.post('/words/delete', [WordsController, 'delete'])

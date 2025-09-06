@@ -29,6 +29,8 @@ LOG_LEVEL = 'info'
 NODE_ENV = 'production'
 SESSION_DRIVER = 'cookie'
 DATABASE_URL = "/mnt/data/production.sqlite3"
+AUDIO_FILES_DIR = "/mnt/data/audio"
+TTS_GAPI_KEY = "/mnt/data/second-self-314011-ad468e29abfa.json"
 
 [mounts]
 source = "data"

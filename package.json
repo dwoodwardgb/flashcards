@@ -64,6 +64,7 @@
     "@adonisjs/shield": "^8.1.1",
     "@adonisjs/static": "^1.1.1",
     "@adonisjs/vite": "^3.0.0",
+    "@google-cloud/text-to-speech": "^6.2.0",
     "@vinejs/vine": "^2.1.0",
     "better-sqlite3": "^11.1.2",
     "edge.js": "^6.0.2",

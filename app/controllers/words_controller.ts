@@ -2,13 +2,20 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Word from '#models/word'
 import {
   updateWordValidator,
-  deleteWordValidator,
+  wordIdValidator,
   createWordValidator,
 } from '#validators/word_validator'
 import { Exception } from '@adonisjs/core/exceptions'
-import logger from '@adonisjs/core/services/logger'
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import env from '#start/env'
+import TtsClientProvider from '#providers/tts_client_provider'
+import { inject } from '@adonisjs/core'
 
+@inject()
 export default class WordsController {
+  constructor(public tts: TtsClientProvider) {}
+
   async create(ctx: HttpContext) {
     const body = await createWordValidator.validate(ctx.request.body())
     const word = new Word()
@@ -61,7 +68,7 @@ export default class WordsController {
   }
 
   async delete(ctx: HttpContext) {
-    const body = await deleteWordValidator.validate(ctx.request.all())
+    const body = await wordIdValidator.validate(ctx.request.all())
 
     try {
       await Word.query().delete().where('id', body.id).exec()
@@ -76,6 +83,57 @@ export default class WordsController {
     } else {
       ctx.session.flash('notification', { type: 'success', message: 'Word removed.' })
       ctx.response.redirect('/', false, 302)
+    }
+  }
+
+  async fetchAudio(ctx: HttpContext) {
+    const body = await wordIdValidator.validate(ctx.request.params())
+    let words
+    try {
+      words = await Word.query().select().where('id', body.id).exec()
+    } catch (e) {
+      ctx.logger.error(e, 'error deleting word')
+      throw new Exception('error deleting word', { status: 500 })
+    }
+
+    if (words.length > 1) {
+      throw new Exception('Too many words for id', { status: 404 })
+    } else if (words.length === 0) {
+      throw new Exception('Could not find word', { status: 404 })
+    }
+
+    const word = words[0]
+    if (!word.pronunciation_url) {
+      const [response] = await this.tts.client.synthesizeSpeech({
+        input: { text: word.traditional },
+        voice: {
+          languageCode: 'cmn-CN',
+          name: 'cmn-CN-Standard-B',
+          ssmlGender: 'MALE',
+        },
+        audioConfig: {
+          audioEncoding: 'MP3',
+        },
+      })
+      const fileUrl = path.join(
+        env.get('AUDIO_FILES_DIR'),
+        `${word.id.toString().padStart(7, '0')}-${word.traditional}.mp3`
+      )
+      await fs.writeFile(fileUrl, response.audioContent as any, 'binary')
+      word.pronunciation_url = fileUrl
+      const affectedRows = (
+        await Word.query()
+          .update('pronunciation_url', word.pronunciation_url)
+          .where('id', body.id)
+          .exec()
+      )[0]
+
+      if (affectedRows !== 1) {
+        throw new Exception('Error updating word with audio', { status: 500 })
+      }
+
+      // ctx.response.header('x-flash', JSON.stringify({ type: 'success', message: 'Word saved.' }))
+      return ctx.view.render('components/word_audio_player', { word })
     }
   }
 }

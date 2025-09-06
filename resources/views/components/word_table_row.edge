@@ -2,7 +2,7 @@
 @let(actionCol = "overflow-auto whitespace-nowrap")
 @let(actionItem = "inline-block")
 
-<tr hx-target="closest tr" hx-swap="outerHTML"  class="contents">
+<tr hx-target="closest tr" hx-swap="outerHTML" class="contents">
   <td class="">
     <label class="flex items-center justify-center cursor-pointer flex-col h-full w-full pr-1">
       <input type="checkbox" form="new-quiz" name="words" value="{{ word.id }}" checked class="" />
@@ -19,6 +19,14 @@
     <input form="update-{{ word.id }}" type="text" name="english" value="{{ word.english }}" class="{{ input }}" />
   </td>
   <td class="{{ actionCol }}">
+    @if(word.pronunciation_url)
+    @wordAudioPlayer({ word })
+    @end
+    @else
+    <button class="py-1 px-2 border rounded-md text-xs" type="button" hx-get="/words/{{word.id}}/audio"
+      hx-swap="outerHTML" hx-target="this">Hear it</button>
+    @end
+
     <form method="post" action="/words/delete" hx-delete="/words/{{word.id}}" class="{{ actionItem }}">
       {{ csrfField() }}
       <input type="hidden" name="id" value="{{ word.id }}" />

@@ -9,9 +9,12 @@ export const updateWordValidator = vine.compile(
   })
 )
 
-export const deleteWordValidator = vine.compile(
+export const wordIdValidator = vine.compile(
   vine.object({
-    id: vine.number().positive(),
+    id: vine
+      .number()
+      // .parse(parseInt as any)
+      .positive(),
   })
 )
 

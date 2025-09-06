@@ -14,6 +14,9 @@ export default class Word extends BaseModel {
   @column()
   declare english: string | null
 
+  @column()
+  declare pronunciation_url: string | null
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
