@@ -117,7 +117,7 @@ export default class WordsController {
       })
       const fileUrl = path.join(
         env.get('AUDIO_FILES_DIR'),
-        `${word.id.toString().padStart(7, '0')}-${word.traditional}.mp3`
+        `${word.id.toString().padStart(7, '0')}.mp3`
       )
       await fs.mkdir(env.get('AUDIO_FILES_DIR'), { recursive: true })
       await fs.writeFile(fileUrl, response.audioContent as any, 'binary')
