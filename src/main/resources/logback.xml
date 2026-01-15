@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+  <!-- Console appender -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Set root logger to INFO -->
+  <root level="INFO">
+    <appender-ref ref="CONSOLE" />
+  </root>
+
+  <!-- Your application package at TRACE -->
+  <logger name="org.dwoodwardgb.flashcards" level="TRACE" />
+
+  <!-- Hibernate SQL logging (keeping your existing config) -->
+  <logger name="org.hibernate.SQL" level="TRACE" />
+  <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" />
+
+  <!-- Spring framework at INFO (less verbose) -->
+  <!-- <logger name="org.springframework" level="INFO" /> -->
+
+  <!-- You can add more specific loggers here -->
+  <!-- Examples:
+       <logger name="org.dwoodwardgb.flashcards.PhraseController" level="TRACE" />
+       <logger name="org.dwoodwardgb.flashcards.PhraseRepository" level="DEBUG" />
+       <logger name="com.some.other.package" level="TRACE" />
+  -->
+</configuration>

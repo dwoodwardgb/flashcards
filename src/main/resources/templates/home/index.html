@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flashcards for learning Mandarin</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"
+      integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz"
+      crossorigin="anonymous"
+    ></script>
+
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22 fill=%22red%22><text y=%22.9em%22 font-size=%2290%22>中</text></svg>"
+    />
+  </head>
+
+  <body class="container px-2 mx-auto" hx-boost="true">
+    <h1 class="text-3xl mt-4 mb-4">Words and Phrases</h1>
+
+    <th:block th:replace="~{home/new-quiz-form :: new-quiz-form(id='new-quiz')}"></th:block>
+
+    <table
+      class="grid mx-1 overflow-auto grid-cols-[auto_70px_minmax(70px,_1fr)_minmax(70px,_1fr)_auto] gap-y-3 sm:grid-cols-[auto_minmax(70px,_1fr)_minmax(70px,_1.5fr)_minmax(70px,_1.5fr)_auto]"
+    >
+      <style>
+        .input {
+          width: 100%;
+          border: solid 1px black;
+        }
+      </style>
+
+      <tbody class="contents">
+        <th:block th:fragment="row (phrase)" th:if="${phrase}">
+          <tr class="contents">
+            <td class="">
+              <label class="flex items-center justify-center cursor-pointer flex-col h-full w-full pr-1">
+                <input type="checkbox" form="new-quiz" name="phrases" th:value="${phrase.id}" checked class="" />
+              </label>
+            </td>
+            <td class="">
+              <input
+                th:form="|update-${phrase.id}|"
+                type="text"
+                name="traditional"
+                th:value="${phrase.traditional}"
+                class="input px-1 py-1"
+              />
+            </td>
+            <td class="">
+              <input
+                th:form="|update-${phrase.id}|"
+                type="text"
+                name="pinyin"
+                th:value="${phrase.pinyin}"
+                class="input px-1 py-1"
+              />
+            </td>
+            <td class="">
+              <input
+                th:form="|update-${phrase.id}|"
+                type="text"
+                name="english"
+                th:value="${phrase.english}"
+                class="input px-1 py-1"
+              />
+            </td>
+            <td class="overflow-auto whitespace-nowrap">
+              <!-- @if(word.pronunciation_url) @wordAudioPlayer({ word }) @end @else -->
+              <button
+                th:if="true"
+                class="py-1 px-2 border rounded-md text-xs inline-block"
+                type="button"
+                th:hx-get="|/phrase/${phrase.id}/audio|"
+                hx-swap="outerHTML"
+                hx-target="this"
+              >
+                Hear it
+              </button>
+              <!-- @end -->
+
+              <form
+                method="post"
+                action="/phrase/delete"
+                th:hx-delete="|/phrase/${phrase.id}|"
+                class="inline-block"
+                hx-target="closest tr"
+                hx-swap="outerHTML"
+              >
+                <!-- {{ csrfField() }} -->
+                <input type="hidden" name="id" th:value="${phrase.id}" />
+                <button type="submit" class="py-1 px-2 border rounded-md text-xs h-full">Delete</button>
+              </form>
+
+              <form
+                th:id="|update-${phrase.id}|"
+                method="post"
+                action="/phrase/update"
+                th:hx-patch="|/phrase/${phrase.id}|"
+                class="inline-block"
+                hx-target="closest tr"
+                hx-swap="outerHTML"
+              >
+                <!-- {{ csrfField() }} -->
+                <input type="hidden" name="id" th:value="${phrase.id}" />
+                <button type="submit" class="py-1 px-2 border rounded-md text-xs h-full">Save</button>
+              </form>
+            </td>
+          </tr>
+        </th:block>
+
+        <th:block th:each="phrase : ${phrases}">
+          <th:block th:replace="~{ :: row(phrase=${phrase})}"></th:block>
+        </th:block>
+
+        <!-- new phrase form row -->
+        <tr hx-swap="beforebegin" hx-target="closest tr" class="contents">
+          <td class=""></td>
+          <td class="">
+            <input form="create-phrase" type="text" name="traditional" value="" class="input" />
+          </td>
+          <td class="">
+            <input form="create-phrase" type="text" name="pinyin" value="" class="input" />
+          </td>
+          <td class="">
+            <input form="create-phrase" type="text" name="english" value="" class="input" />
+          </td>
+          <td class="overflow-auto whitespace-nowrap">
+            <form
+              id="create-phrase"
+              method="post"
+              action="/phrase"
+              hx-post="/phrase?htmx=true"
+              class="inline-block"
+              onsubmit="this.submit(); this.reset(); return false;"
+            >
+              <!-- {{ csrfField() }} -->
+              <button type="submit" class="py-1 px-2 border rounded-md text-xs">Add</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
