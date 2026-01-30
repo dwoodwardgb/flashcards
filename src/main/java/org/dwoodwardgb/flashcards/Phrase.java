@@ -12,18 +12,24 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "phrases")
 public class Phrase {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int id;
+  private Integer id;
   @Column(nullable = false)
+  @NotBlank(message = "Traditional is required")
   private String traditional;
+
   @Column(nullable = false)
+  @NotBlank(message = "Pinyin is required")
   private String pinyin;
+
   @Column(nullable = false)
+  @NotBlank(message = "English is required")
   private String english;
 
   @CreationTimestamp

@@ -5,7 +5,7 @@
   action="/quizes/create"
   class="mt-3 mb-4 flex items-center justify-center gap-4"
 >
-  <!-- {{ csrfField() }} -->
+  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
   <label>
     From
     <select multiple name="from[]" required>
