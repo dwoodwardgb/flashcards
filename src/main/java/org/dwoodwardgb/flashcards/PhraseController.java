@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -43,45 +43,45 @@ public class PhraseController {
   }
 
   @PostMapping("/phrase")
-  public String add(@Valid @ModelAttribute Phrase newPhrase, HttpServletRequest req, HttpServletResponse res,
-      HttpSession session, Model model) {
+  public Object add(@Valid @ModelAttribute Phrase newPhrase, HttpServletRequest req, HttpServletResponse res,
+      RedirectAttributes redirectAttributes, Model model) {
     var phrase = phraseService.create(newPhrase);
 
     var isHtmxReq = req.getHeader("HX-Request") != null;
     if (isHtmxReq) {
       // HTMX request, so only return partial
+      res.setHeader("HX-Trigger", PHRASE_ADDED.toHxTrigger());
       model.addAttribute("phrase", phrase);
-      res.setHeader("HX-Trigger", FlashMessageAdvice.toHxTrigger(PHRASE_ADDED));
       return "home/index :: row";
     } else {
-      FlashMessageAdvice.setFlash(session, PHRASE_SAVED);
+      redirectAttributes.addFlashAttribute("flash", PHRASE_ADDED);
       return "redirect:/";
     }
   }
 
   @RequestMapping(method = { POST, PATCH }, path = { "/phrase/{id}", "/phrase/update" })
-  public String save(@Valid @ModelAttribute Phrase updates, HttpServletRequest req, HttpServletResponse res,
-      HttpSession session, Model model) {
+  public Object save(@Valid @ModelAttribute Phrase updates, HttpServletRequest req, HttpServletResponse res,
+      RedirectAttributes redirectAttributes, Model model) {
 
     var savedPhrase = phraseService.update(updates);
 
     var isHtmxReq = req.getHeader("HX-Request") != null;
     if (isHtmxReq) {
       // HTMX request, so only return partial
+      res.setHeader("HX-Trigger", PHRASE_SAVED.toHxTrigger());
       model.addAttribute("phrase", savedPhrase);
-      res.setHeader("HX-Trigger", FlashMessageAdvice.toHxTrigger(PHRASE_SAVED));
       return "home/index :: row";
     } else {
-      FlashMessageAdvice.setFlash(session, PHRASE_SAVED);
+      redirectAttributes.addFlashAttribute("flash", PHRASE_SAVED);
       return "redirect:/";
     }
   }
 
   @RequestMapping(method = { POST, DELETE }, path = { "/phrase/{id}", "/phrase/delete" })
-  public ResponseEntity<?> delete(
+  public Object delete(
       @PathVariable(required = false, name = "id") Integer id,
       @RequestParam(required = false, name = "id") Integer formId,
-      HttpServletRequest req, HttpSession session, Model model) {
+      HttpServletRequest req, RedirectAttributes redirectAttributes) {
 
     var phraseId = id != null ? id : formId;
     if (phraseId == null) {
@@ -94,13 +94,11 @@ public class PhraseController {
     if (isHtmxReq) {
       // HTMX request, so return a 204
       return ResponseEntity.noContent()
-          .header("HX-Trigger", FlashMessageAdvice.toHxTrigger(PHRASE_DELETED))
+          .header("HX-Trigger", PHRASE_DELETED.toHxTrigger())
           .build();
     } else {
-      FlashMessageAdvice.setFlash(session, PHRASE_DELETED);
-      return ResponseEntity.status(HttpStatus.FOUND)
-          .header("Location", "/")
-          .build();
+      redirectAttributes.addFlashAttribute("flash", PHRASE_DELETED);
+      return "redirect:/";
     }
   }
 }

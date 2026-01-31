@@ -21,4 +21,13 @@ public record FlashMessage(String message, MessageType type) {
   public static FlashMessage info(String message) {
     return new FlashMessage(message, MessageType.INFO);
   }
+
+  /**
+   * Serializes this FlashMessage as an HX-Trigger header value for HTMX responses.
+   * Triggers a "flash" event with the flash message data.
+   */
+  public String toHxTrigger() {
+    return """
+        { "flash":{"message":"%s","type":"%s"}}""".formatted(message, type.name().toLowerCase());
+  }
 }
