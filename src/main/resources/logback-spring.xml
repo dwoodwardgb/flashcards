@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+  <!-- Console appender -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Set root logger to INFO -->
+  <root level="INFO">
+    <appender-ref ref="CONSOLE" />
+  </root>
+
+  <!-- Development (default, non-prod) -->
+  <springProfile name="!prod">
+    <!-- Your application package at TRACE -->
+    <logger name="org.dwoodwardgb.flashcards" level="TRACE" />
+
+    <!-- HTTP request/response logging with routes and status codes -->
+    <logger name="org.springframework.web.servlet.DispatcherServlet" level="INFO" />
+
+    <!-- See which handler method is matched -->
+    <logger name="org.springframework.web.servlet.mvc.method.annotation" level="INFO" />
+
+    <!-- Security debugging - shows why 403 happens -->
+    <logger name="org.springframework.security" level="DEBUG" />
+
+    <!-- Hibernate SQL logging -->
+    <logger name="org.hibernate.SQL" level="TRACE" />
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" />
+  </springProfile>
+
+  <!-- Production -->
+  <springProfile name="prod">
+    <root level="WARN">
+      <appender-ref ref="CONSOLE" />
+    </root>
+
+    <logger name="org.dwoodwardgb.flashcards" level="TRACE" />
+    <logger name="org.springframework.web" level="WARN" />
+    <logger name="org.springframework.security" level="WARN" />
+    <logger name="org.hibernate" level="WARN" />
+  </springProfile>
+</configuration>

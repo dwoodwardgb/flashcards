@@ -39,7 +39,7 @@ public class PhraseController {
   public String home(Model model) {
     var phrases = phraseService.findAll();
     model.addAttribute("phrases", phrases);
-    return "/home/index";
+    return "home/index";
   }
 
   @PostMapping("/phrase")

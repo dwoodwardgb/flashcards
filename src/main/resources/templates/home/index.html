@@ -146,11 +146,7 @@
               action="/phrase"
               hx-post="/phrase"
               class="inline-block"
-              onsubmit="
-                this.submit();
-                this.reset();
-                return false;
-              "
+              hx-on::after-request="this.reset()"
             >
               <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
               <button type="submit" class="py-1 px-2 border rounded-md text-xs">Add</button>
