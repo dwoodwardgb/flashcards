@@ -32,6 +32,9 @@ public class Phrase {
   @NotBlank(message = "English is required")
   private String english;
 
+  @Column(name = "pronunciation_url", nullable = true)
+  private String pronunciationUrl;
+
   @CreationTimestamp
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
@@ -70,6 +73,14 @@ public class Phrase {
 
   public void setEnglish(String english) {
     this.english = english;
+  }
+
+  public String getPronunciationUrl() {
+    return pronunciationUrl;
+  }
+
+  public void setPronunciationUrl(String pronunciationUrl) {
+    this.pronunciationUrl = pronunciationUrl;
   }
 
   public LocalDateTime getCreatedAt() {

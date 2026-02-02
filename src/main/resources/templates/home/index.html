@@ -84,9 +84,8 @@
               />
             </td>
             <td class="overflow-auto whitespace-nowrap">
-              <!-- @if(word.pronunciation_url) @wordAudioPlayer({ word }) @end @else -->
               <button
-                th:if="true"
+                th:if="${phrase.pronunciationUrl == null}"
                 class="py-1 px-2 border rounded-md text-xs inline-block"
                 type="button"
                 th:hx-get="|/phrase/${phrase.id}/audio|"
@@ -95,7 +94,17 @@
               >
                 Hear it
               </button>
-              <!-- @end -->
+              <!-- TODO: move to a separate fragment -->
+              <span th:if="${phrase.pronunciationUrl != null}">
+                <audio th:src="|${phrase.pronunciationUrl}|"></audio>
+                <button
+                  type="button"
+                  class="w-[55px] py-1 light:bg-slate-200 border rounded-md text-xs h-full"
+                  onclick="event.target?.parentNode?.firstElementChild?.play?.()"
+                >
+                  ⏵
+                </button>
+              </span>
 
               <form
                 method="post"
