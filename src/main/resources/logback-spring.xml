@@ -43,5 +43,8 @@
     <logger name="org.springframework.web" level="WARN" />
     <logger name="org.springframework.security" level="WARN" />
     <logger name="org.hibernate" level="WARN" />
+    <logger name="org.springframework.boot.web.embedded.tomcat" level="INFO" />
+    <logger name="org.springframework.boot.web.embedded" level="INFO" />
+    <logger name="org.springframework.boot.web.server" level="INFO" />
   </springProfile>
 </configuration>
