@@ -24,13 +24,16 @@ import jakarta.validation.Valid;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
+import java.io.IOException;
+
 @Controller
 @Validated
 public class PhraseController {
   private static final Logger logger = LoggerFactory.getLogger(PhraseController.class);
-  public static final FlashMessage PHRASE_SAVED = FlashMessage.success("Phrase saved successfully.");
-  public static final FlashMessage PHRASE_ADDED = FlashMessage.success("Phrase added.");
-  public static final FlashMessage PHRASE_DELETED = FlashMessage.success("Phrase deleted.");
+  public static final FlashMessage PHRASE_SAVED = FlashMessage.success("Phrase saved successfully.", null);
+  public static final FlashMessage PHRASE_ADDED = FlashMessage.success("Phrase added.", null);
+  public static final FlashMessage PHRASE_DELETED = FlashMessage.success("Phrase deleted.", null);
+  public static final FlashMessage PHRASE_AUDIO_DOWNLOADED = FlashMessage.success("Phrase audio downloaded.", null);
 
   @Autowired
   private PhraseService phraseService;
@@ -98,6 +101,22 @@ public class PhraseController {
           .build();
     } else {
       redirectAttributes.addFlashAttribute("flash", PHRASE_DELETED);
+      return "redirect:/";
+    }
+  }
+
+  @PostMapping("/phrase/{id}/audio")
+  public Object fetchAudio(@PathVariable Integer id, HttpServletRequest req, RedirectAttributes redirectAttributes,
+      Model model)
+      throws IOException {
+    var phrase = phraseService.fetchAudio(id);
+
+    var isHtmxReq = req.getHeader("HX-Request") != null;
+    if (isHtmxReq) {
+      model.addAttribute("phrase", phrase);
+      return "home/index :: row";
+    } else {
+      redirectAttributes.addFlashAttribute("flash", PHRASE_AUDIO_DOWNLOADED);
       return "redirect:/";
     }
   }
