@@ -13,7 +13,8 @@
     <script type="importmap">
       {
         "imports": {
-          "lit": "https://cdn.jsdelivr.net/npm/lit@3/+esm"
+          "lit": "https://cdn.jsdelivr.net/npm/lit@3/+esm",
+          "lit/directives/ref.js": "https://cdn.jsdelivr.net/npm/lit@3/directives/ref.js/+esm"
         }
       }
     </script>
@@ -81,7 +82,7 @@
                 class="input px-1 py-1"
               />
             </td>
-            <td class="overflow-auto whitespace-nowrap">
+            <td class="">
               <form
                 th:if="${phrase.pronunciationUrl == null}"
                 method="post"
@@ -94,7 +95,7 @@
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <button class="py-1 px-2 border rounded-md text-xs h-full" type="submit">Hear it</button>
               </form>
-              <!-- TODO: move to a separate fragment -->
+
               <span th:if="${phrase.pronunciationUrl != null}" class="inline-block">
                 <audio th:src="|${phrase.pronunciationUrl}|"></audio>
                 <button
@@ -106,32 +107,40 @@
                 </button>
               </span>
 
-              <form
-                method="post"
-                action="/phrase/delete"
-                th:hx-delete="|/phrase/${phrase.id}|"
-                class="inline-block"
-                hx-target="closest tr"
-                hx-swap="outerHTML"
-              >
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <input type="hidden" name="id" th:value="${phrase.id}" />
-                <button type="submit" class="py-1 px-2 border rounded-md text-xs h-full">Delete</button>
-              </form>
+              <actions-popup>
+                <span data-trigger-content>Actions</span>
+                <div data-popup-content>
+                  <div class="text-center mb-3" th:text="${phrase.traditional}"></div>
+                  <div class="flex justify-around items-center">
+                    <form
+                      method="post"
+                      action="/phrase/delete"
+                      th:hx-delete="|/phrase/${phrase.id}|"
+                      class="inline-block"
+                      hx-target="closest tr"
+                      hx-swap="outerHTML"
+                    >
+                      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                      <input type="hidden" name="id" th:value="${phrase.id}" />
+                      <button type="submit" class="py-1 px-2 border rounded-md text-xs h-full">Delete</button>
+                    </form>
 
-              <form
-                th:id="|update-${phrase.id}|"
-                method="post"
-                action="/phrase/update"
-                th:hx-patch="|/phrase/${phrase.id}|"
-                class="inline-block"
-                hx-target="closest tr"
-                hx-swap="outerHTML"
-              >
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <input type="hidden" name="id" th:value="${phrase.id}" />
-                <button type="submit" class="py-1 px-2 border rounded-md text-xs h-full">Save</button>
-              </form>
+                    <form
+                      th:id="|update-${phrase.id}|"
+                      method="post"
+                      action="/phrase/update"
+                      th:hx-patch="|/phrase/${phrase.id}|"
+                      class="inline-block"
+                      hx-target="closest tr"
+                      hx-swap="outerHTML"
+                    >
+                      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                      <input type="hidden" name="id" th:value="${phrase.id}" />
+                      <button type="submit" class="py-1 px-2 border rounded-md text-xs h-full">Save</button>
+                    </form>
+                  </div>
+                </div>
+              </actions-popup>
             </td>
           </tr>
         </th:block>
@@ -165,12 +174,13 @@
       </tbody>
     </table>
 
+    <script type="module" th:src="@{/js/flash-alert.js}"></script>
+    <script type="module" th:src="@{/js/actions-popup.js}"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"
       integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz"
       crossorigin="anonymous"
     ></script>
     <script th:src="@{/js/htmx-config.js}"></script>
-    <script type="module" th:src="@{/js/flash-alert.js}"></script>
   </body>
 </html>
