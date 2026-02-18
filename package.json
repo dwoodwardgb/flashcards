@@ -1,15 +1,11 @@
 {
   "name": "flashcards",
-  "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
+    "build": "npx tailwindcss -i ./src/main/resources/static/css/tailwind.css -o ./src/main/resources/static/css/tailwind.min.css --minify",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "devDependencies": {
-    "lit": "^3.3.2"
+    "lit": "^3.3.2",
+    "tailwindcss": "^3"
   }
 }

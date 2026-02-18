@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+node_modules
+.metadata
+audio
+*.db
+*.sqlite3
+second-self-314011-ad468e29abfa.json
+
+src/main/resources/static/css/tailwind.min.css

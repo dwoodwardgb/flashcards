@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Flashcards for learning Mandarin</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Prod: compiled CSS -->
+    <link th:if="${#arrays.contains(@environment.activeProfiles, 'prod')}" rel="stylesheet" th:href="@{/css/tailwind.min.css}" />
+    <!-- Dev: Tailwind CDN -->
+    <script th:unless="${#arrays.contains(@environment.activeProfiles, 'prod')}" src="https://cdn.tailwindcss.com"></script>
+
     <link
       rel="icon"
       href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22 fill=%22red%22><text y=%22.9em%22 font-size=%2290%22>中</text></svg>"
@@ -13,15 +17,15 @@
     <script type="importmap">
       {
         "imports": {
-          "lit": "https://cdn.jsdelivr.net/npm/lit@3/+esm",
-          "lit/directives/ref.js": "https://cdn.jsdelivr.net/npm/lit@3/directives/ref.js/+esm"
+          "lit": "https://esm.run/lit@3",
+          "lit/directives/ref.js": "https://esm.run/lit@3/directives/ref.js"
         }
       }
     </script>
   </head>
 
   <body class="container px-2 mx-auto" hx-boost="true">
-    <h1 class="text-3xl mt-4 mb-4">Words and Phrases</h1>
+    <h1 class="text-3xl mt-4 mb-8">Words and Phrases</h1>
 
     <flash-alert
       id="flash"
@@ -30,24 +34,42 @@
       th:details="${flash != null && flash.details != null ? flash.details : ''}"
     ></flash-alert>
 
-    <th:block th:replace="~{home/new-quiz-form :: new-quiz-form(id='new-quiz')}"></th:block>
-
     <table
       class="grid mx-1 overflow-auto grid-cols-[auto_70px_minmax(70px,_1fr)_minmax(70px,_1fr)_auto] sm:grid-cols-[auto_minmax(70px,_1fr)_minmax(70px,_1.5fr)_minmax(70px,_1.5fr)_auto]"
     >
       <style>
         .input {
           width: 100%;
+
           border: solid 1px black;
+
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          border-radius: 0;
+          background: transparent;
+          outline: none;
+          font: inherit;
+          color: inherit;
         }
       </style>
 
+      <thead class="contents">
+        <tr class="contents">
+          <th></th>
+          <th>Trad</th>
+          <th>Pinyin</th>
+          <th>English</th>
+          <th></th>
+        </tr>
+      </thead>
+
       <tbody class="contents">
-        <th:block th:each="phrase : ${phrases}">
-          <th:block th:replace="~{ :: row(phrase=${phrase})}"></th:block>
+        <th:block th:each="phrase, index : ${phrases}">
+          <th:block th:replace="~{ :: row(phrase=${phrase}, index=${index})}"></th:block>
         </th:block>
 
-        <th:block th:fragment="row (phrase)" th:if="${phrase}">
+        <th:block th:fragment="row (phrase, index)" th:if="${phrase}">
           <!-- data-id attr is just for debuging -->
           <tr class="contents" th:data-id="${phrase.id}">
             <td class="">
@@ -82,7 +104,7 @@
                 class="input px-1 py-1"
               />
             </td>
-            <td class="">
+            <td class="flex items-center gap-2">
               <form
                 th:if="${phrase.pronunciationUrl == null}"
                 method="post"
@@ -90,13 +112,12 @@
                 th:hx-post="|/phrase/${phrase.id}/audio|"
                 hx-swap="outerHTML"
                 hx-target="closest tr"
-                class="inline-block"
+                class="inline-block h-full"
               >
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <button class="py-1 px-2 border rounded-md text-xs h-full" type="submit">Hear it</button>
               </form>
-
-              <span th:if="${phrase.pronunciationUrl != null}" class="inline-block">
+              <span th:unless="${phrase.pronunciationUrl == null}" class="inline-block h-full">
                 <audio th:src="|${phrase.pronunciationUrl}|"></audio>
                 <button
                   type="button"
@@ -107,7 +128,7 @@
                 </button>
               </span>
 
-              <actions-popup>
+              <actions-popup class="inline-block h-full">
                 <span data-trigger-content>Actions</span>
                 <div data-popup-content>
                   <div class="text-center mb-3" th:text="${phrase.traditional}"></div>

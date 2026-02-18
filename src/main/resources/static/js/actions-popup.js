@@ -66,6 +66,7 @@ export class ActionsPopup extends LitElement {
     this._popupContent = this.querySelector("[data-popup-content]");
 
     // Remove from DOM so render() can place them declaratively
+    // NOTE: this removes their event listeners, which breaks HTMX, so we need to re-attach them after render()
     this._triggerContent?.remove();
     this._popupContent?.remove();
 
@@ -128,12 +129,13 @@ export class ActionsPopup extends LitElement {
   _handleToggle(e) {
     this.open = e.newState === "open";
     if (this.open) {
+      this._positionPopover();
       // Position after the popover is shown (so we can measure it)
-      requestAnimationFrame(() => this._positionPopover());
+      // requestAnimationFrame(() => this._positionPopover());
     }
   }
 
-  updated() {
+  firstUpdated() {
     // Re-process HTMX attributes after Lit has rendered the content
     if (window.htmx && this._popupContent) {
       htmx.process(this._popupContent);
@@ -152,6 +154,7 @@ export class ActionsPopup extends LitElement {
         popovertarget="${this._popoverId}"
         aria-haspopup="true"
         aria-expanded="${this.open}"
+        class="h-full"
       >
         ${this._triggerContent}
       </button>
