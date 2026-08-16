@@ -3,20 +3,27 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development node --watch --import remix/node-tsx server.ts",
-    "hmr": "NODE_ENV=development node hmr.ts",
-    "start": "NODE_ENV=production node --import remix/node-tsx server.ts",
-    "test": "NODE_ENV=test node --import remix/node-tsx --test",
-    "typecheck": "tsc --noEmit"
+    "dev": "NODE_ENV=development bun --watch server.ts",
+    "hmr": "NODE_ENV=development bun hmr.ts",
+    "start": "NODE_ENV=production bun server.ts",
+    "db:seed": "bun db/seed-users.ts",
+    "test": "NODE_ENV=test bunx remix test",
+    "typecheck": "bunx tsc --noEmit"
   },
   "engines": {
-    "node": ">=24.3.0"
+    "bun": ">=1.2.0"
+  },
+  "overrides": {
+    "@remix-run/fetch-router": "^0.21.0"
   },
   "dependencies": {
     "remix": "^3.0.0-beta.6"
   },
   "devDependencies": {
+    "@types/bun": "^1.3.14",
     "@types/node": "latest",
+    "chokidar": "^5.0.0",
+    "playwright": "^1.62.1",
     "typescript": "latest"
   }
 }

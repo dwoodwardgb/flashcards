@@ -2,15 +2,17 @@
 import type { Handle, RemixNode } from 'remix/ui'
 import { css } from 'remix/ui'
 
+import { Header } from '../ui/header.tsx'
 import { Document } from './document.tsx'
 import { PromptButton } from './public/prompt-button.tsx'
 
 const FONT_STACK =
   "'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace"
 
-export function HomePage() {
+export function HomePage(handle: Handle<{ user: { username: string } | null; csrfToken: string }>) {
   return () => (
     <Document head={<HomeHead />}>
+      <Header user={handle.props.user} csrfToken={handle.props.csrfToken} />
       <main
         mix={css({
           // Light-mode design tokens (default).
@@ -31,7 +33,7 @@ export function HomePage() {
           '& *, & *::before, & *::after': { boxSizing: 'border-box' },
           margin: 0,
           padding: '48px 24px',
-          minHeight: '100vh',
+          minHeight: 'calc(100vh - 49px)',
           background: 'var(--surface-0)',
           color: 'var(--text-primary)',
           fontFamily: FONT_STACK,

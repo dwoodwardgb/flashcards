@@ -1,3 +1,5 @@
+import { Auth } from 'remix/middleware/auth'
+import { getCsrfToken } from 'remix/middleware/csrf'
 import { createController } from 'remix/router'
 
 import { assetServer } from '../assets.ts'
@@ -12,7 +14,10 @@ export default createController(routes, {
       )
     },
     home(context) {
-      return context.render(<HomePage />)
+      let auth = context.get(Auth)
+      return context.render(
+        <HomePage user={auth.ok ? auth.identity : null} csrfToken={getCsrfToken(context)} />,
+      )
     },
   },
 })
