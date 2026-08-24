@@ -1,0 +1,25 @@
+---
+// This script runs at build time on the server
+---
+
+<!-- This script runs entirely on the client -->
+<script>
+  import { onCLS, onINP, onLCP } from 'web-vitals';
+
+  function sendToAnalytics(metric: any) {
+    const body = JSON.stringify(metric);
+
+    // Use sendBeacon if available, fallback to fetch
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('/api/webvitals', body);
+    } else {
+      fetch('/api/webvitals', { body, method: 'POST', keepalive: true });
+    }
+  }
+
+  // Initialize listeners
+  onCLS(sendToAnalytics);
+  onINP(sendToAnalytics);
+  onLCP(sendToAnalytics);
+</script>
+

@@ -1,0 +1,54 @@
+---
+import { listVitals } from "../lib/db";
+
+interface VitalRow {
+  name: string;
+  value: number;
+  delta: number;
+  rating: string | null;
+  navigation_type: string | null;
+  created_at: string;
+}
+
+const rows = listVitals.all() as VitalRow[];
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Web Vitals Admin</title>
+    <style>
+      table { border-collapse: collapse; width: 100%; font-family: monospace; }
+      th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+      th { background: #f3f3f3; }
+    </style>
+  </head>
+  <body>
+    <h1>Web Vitals</h1>
+    <p>{rows.length} records</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Value</th>
+          <th>Delta</th>
+          <th>Rating</th>
+          <th>Navigation Type</th>
+          <th>Created At</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr>
+            <td>{row.name}</td>
+            <td>{row.value}</td>
+            <td>{row.delta}</td>
+            <td>{row.rating ?? ""}</td>
+            <td>{row.navigation_type ?? ""}</td>
+            <td>{row.created_at}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </body>
+</html>

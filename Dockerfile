@@ -10,7 +10,7 @@ WORKDIR /app
 ENV HOST=0.0.0.0
 ENV PORT=4321
 ENV NODE_ENV=production
-ENV ASTRO_NODE_AUTOSTART=disabled
+ENV APP_ENV=prod
 EXPOSE 4321
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
