@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bottom Navigation - Flashcards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #fafafa;
+            overflow: hidden;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                align-items: center;
+                justify-content: center;
+                background: #e8e8e8;
+            }
+
+            .app-container {
+                width: 100%;
+                max-width: 480px;
+                height: 90vh;
+                max-height: 800px;
+                display: flex;
+                flex-direction: column;
+                background: white;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 20px 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .header-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 16px 20px;
+            padding-bottom: 80px;
+        }
+
+        .search-bar {
+            background: #f0f0f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            border: none;
+            background: none;
+            font-size: 15px;
+            flex: 1;
+            outline: none;
+            color: #333;
+        }
+
+        .search-bar input::placeholder {
+            color: #999;
+        }
+
+        .search-icon {
+            color: #999;
+            font-size: 16px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .word-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .word-card .lang-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            padding: 3px 0;
+        }
+
+        .word-card .lang-flag {
+            font-size: 14px;
+        }
+
+        .word-card .word-text {
+            color: #333;
+        }
+
+        .study-prompt {
+            background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%);
+            border: 1px solid #667eea33;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .study-prompt-icon {
+            font-size: 28px;
+        }
+
+        .study-prompt-text {
+            flex: 1;
+        }
+
+        .study-prompt-text strong {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .study-prompt-text span {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .study-prompt-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+            z-index: 100;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+
+        @media (min-width: 768px) {
+            .bottom-nav {
+                position: absolute;
+                border-radius: 0 0 16px 16px;
+            }
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+        }
+
+        .nav-item .nav-icon {
+            font-size: 22px;
+            line-height: 1;
+            color: #999;
+            transition: color 0.2s;
+        }
+
+        .nav-item .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #999;
+            transition: color 0.2s;
+        }
+
+        .nav-item.active .nav-icon {
+            color: #667eea;
+        }
+
+        .nav-item.active .nav-label {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 0 0 3px 3px;
+        }
+
+        /* Center add button in nav */
+        .nav-item.nav-add {
+            position: relative;
+            top: -12px;
+        }
+
+        .nav-item.nav-add .nav-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-item.nav-add .nav-label {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .nav-badge {
+            position: absolute;
+            top: 0;
+            right: 6px;
+            width: 16px;
+            height: 16px;
+            background: #ff4757;
+            border-radius: 50%;
+            font-size: 10px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @supports (padding: max(0px)) {
+            .header {
+                padding-top: max(16px, env(safe-area-inset-top));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <div class="header-top">
+                <h1>Dictionary</h1>
+                <div class="header-actions">
+                    <button class="header-btn">&#9788;</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <div class="search-bar">
+                <span class="search-icon">&#128269;</span>
+                <input type="text" placeholder="Search words...">
+            </div>
+
+            <div class="study-prompt">
+                <span class="study-prompt-icon">&#128218;</span>
+                <div class="study-prompt-text">
+                    <strong>12 words due for review</strong>
+                    <span>Practice now to keep your streak!</span>
+                </div>
+                <button class="study-prompt-btn">Study</button>
+            </div>
+
+            <div class="section-title">Recently Added</div>
+
+            <div class="word-card">
+                <div class="lang-line">
+                    <span class="lang-flag">&#127482;&#127480;</span>
+                    <span class="word-text">Water</span>
+                </div>
+                <div class="lang-line">
+                    <span class="lang-flag">&#127466;&#127480;</span>
+                    <span class="word-text">Agua</span>
+                </div>
+                <div class="lang-line">
+                    <span class="lang-flag">&#127467;&#127479;</span>
+                    <span class="word-text">Eau</span>
+                </div>
+            </div>
+
+            <div class="word-card">
+                <div class="lang-line">
+                    <span class="lang-flag">&#127482;&#127480;</span>
+                    <span class="word-text">Hello</span>
+                </div>
+                <div class="lang-line">
+                    <span class="lang-flag">&#127466;&#127480;</span>
+                    <span class="word-text">Hola</span>
+                </div>
+                <div class="lang-line">
+                    <span class="lang-flag">&#127467;&#127479;</span>
+                    <span class="word-text">Bonjour</span>
+                </div>
+            </div>
+
+            <div class="word-card">
+                <div class="lang-line">
+                    <span class="lang-flag">&#127482;&#127480;</span>
+                    <span class="word-text">House</span>
+                </div>
+                <div class="lang-line">
+                    <span class="lang-flag">&#127466;&#127480;</span>
+                    <span class="word-text">Casa</span>
+                </div>
+                <div class="lang-line">
+                    <span class="lang-flag">&#127467;&#127479;</span>
+                    <span class="word-text">Maison</span>
+                </div>
+            </div>
+
+            <div class="word-card">
+                <div class="lang-line">
+                    <span class="lang-flag">&#127482;&#127480;</span>
+                    <span class="word-text">Bread</span>
+                </div>
+                <div class="lang-line">
+                    <span class="lang-flag">&#127466;&#127480;</span>
+                    <span class="word-text">Pan</span>
+                </div>
+                <div class="lang-line">
+                    <span class="lang-flag">&#127467;&#127479;</span>
+                    <span class="word-text">Pain</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation Bar -->
+        <nav class="bottom-nav">
+            <a class="nav-item active" href="#">
+                <span class="nav-icon">&#128218;</span>
+                <span class="nav-label">Words</span>
+            </a>
+            <a class="nav-item" href="#">
+                <span class="nav-icon">&#128270;</span>
+                <span class="nav-label">Search</span>
+            </a>
+            <a class="nav-item nav-add" href="#">
+                <span class="nav-icon">+</span>
+                <span class="nav-label">Add</span>
+            </a>
+            <a class="nav-item" href="#">
+                <span class="nav-icon">&#127891;</span>
+                <span class="nav-label">Study</span>
+                <span class="nav-badge">5</span>
+            </a>
+            <a class="nav-item" href="#">
+                <span class="nav-icon">&#9881;</span>
+                <span class="nav-label">Settings</span>
+            </a>
+        </nav>
+    </div>
+
+    <script>
+        const navItems = document.querySelectorAll('.nav-item:not(.nav-add)');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                navItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+
+        document.querySelector('.nav-add').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Add new word');
+        });
+    </script>
+    </div>
+</body>
+</html>

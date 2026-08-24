@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Recent Searches Popup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #fafafa;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .results-area {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        /* Recent searches popup */
+        .recent-popup {
+            position: absolute;
+            bottom: 76px;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 16px 16px 0 0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+            max-height: 60vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popup-header {
+            padding: 16px 20px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .popup-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .clear-all {
+            font-size: 13px;
+            color: #667eea;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .recent-list {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .recent-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            border-bottom: 1px solid #f8f8f8;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .recent-item:active {
+            background: #f8f9fa;
+        }
+
+        .recent-icon {
+            font-size: 18px;
+            margin-right: 14px;
+            opacity: 0.5;
+        }
+
+        .recent-text {
+            flex: 1;
+            font-size: 15px;
+            color: #333;
+        }
+
+        .delete-btn {
+            font-size: 18px;
+            color: #ccc;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+
+        .section-divider {
+            padding: 12px 20px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #fafafa;
+        }
+
+        .search-container {
+            background: white;
+            padding: 12px 20px 32px;
+            border-top: 1px solid #e8e8e8;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            outline: none;
+            background: white;
+        }
+
+        .search-input::placeholder {
+            color: #aaa;
+        }
+
+        @supports (padding: max(0px)) {
+            .search-container {
+                padding-bottom: max(32px, env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Trilingual Dictionary</h1>
+    </div>
+
+    <div class="main-content">
+        <div class="results-area">
+            Tap search to begin
+        </div>
+
+        <!-- Recent searches popup -->
+        <div class="recent-popup">
+            <div class="popup-header">
+                <div class="popup-title">Recent</div>
+                <div class="clear-all">Clear All</div>
+            </div>
+
+            <div class="recent-list">
+                <div class="recent-item">
+                    <span class="recent-icon">🕐</span>
+                    <span class="recent-text">Hello</span>
+                    <span class="delete-btn">×</span>
+                </div>
+                <div class="recent-item">
+                    <span class="recent-icon">🕐</span>
+                    <span class="recent-text">Book</span>
+                    <span class="delete-btn">×</span>
+                </div>
+                <div class="recent-item">
+                    <span class="recent-icon">🕐</span>
+                    <span class="recent-text">Water</span>
+                    <span class="delete-btn">×</span>
+                </div>
+                <div class="recent-item">
+                    <span class="recent-icon">🕐</span>
+                    <span class="recent-text">Thank you</span>
+                    <span class="delete-btn">×</span>
+                </div>
+
+                <div class="section-divider">Popular</div>
+
+                <div class="recent-item">
+                    <span class="recent-icon">🔥</span>
+                    <span class="recent-text">Good morning</span>
+                </div>
+                <div class="recent-item">
+                    <span class="recent-icon">🔥</span>
+                    <span class="recent-text">How are you</span>
+                </div>
+                <div class="recent-item">
+                    <span class="recent-icon">🔥</span>
+                    <span class="recent-text">Goodbye</span>
+                </div>
+                <div class="recent-item">
+                    <span class="recent-icon">🔥</span>
+                    <span class="recent-text">Please</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search for a word..." autofocus>
+    </div>
+
+    <script>
+        const popup = document.querySelector('.recent-popup');
+        const searchInput = document.querySelector('.search-input');
+        const recentItems = document.querySelectorAll('.recent-item');
+        const deleteBtns = document.querySelectorAll('.delete-btn');
+        const clearAll = document.querySelector('.clear-all');
+
+        // Hide popup when typing
+        searchInput.addEventListener('input', (e) => {
+            if (e.target.value.length > 0) {
+                popup.style.display = 'none';
+            } else {
+                popup.style.display = 'flex';
+            }
+        });
+
+        // Click recent item to search
+        recentItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                if (!e.target.classList.contains('delete-btn')) {
+                    const text = item.querySelector('.recent-text').textContent;
+                    searchInput.value = text;
+                    popup.style.display = 'none';
+                }
+            });
+        });
+
+        // Delete individual items
+        deleteBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                btn.closest('.recent-item').style.display = 'none';
+            });
+        });
+
+        // Clear all
+        clearAll.addEventListener('click', () => {
+            document.querySelectorAll('.recent-item .delete-btn').forEach(btn => {
+                btn.closest('.recent-item').style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

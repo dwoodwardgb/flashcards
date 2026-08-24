@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Add Word - Dictionary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #fafafa;
+            overflow: hidden;
+        }
+
+        /* Desktop wrapper */
+        @media (min-width: 768px) {
+            body {
+                align-items: center;
+                justify-content: center;
+                background: #e8e8e8;
+            }
+
+            .app-container {
+                width: 100%;
+                max-width: 480px;
+                height: 90vh;
+                max-height: 800px;
+                display: flex;
+                flex-direction: column;
+                background: white;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-btn {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .delete-btn {
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 20px 20px 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 32px 1fr 80px;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .form-row:last-child {
+            border-bottom: none;
+        }
+
+        .lang-flag {
+            font-size: 22px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 8px 0;
+            font-size: 16px;
+            border: none;
+            outline: none;
+            color: #333;
+        }
+
+        .text-input::placeholder {
+            color: #ccc;
+        }
+
+        .pronunciation-input {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .pronunciation-input::placeholder {
+            color: #ddd;
+        }
+
+        .speaker-btn {
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0.3;
+            padding: 8px;
+        }
+
+        .speaker-btn.active {
+            opacity: 0.6;
+        }
+
+        .button-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 20px 32px;
+            background: white;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .save-btn:active {
+            transform: scale(0.98);
+        }
+
+        .save-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        @supports (padding: max(0px)) {
+            .header {
+                padding-top: max(16px, env(safe-area-inset-top));
+            }
+            .button-container {
+                padding-bottom: max(32px, env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+    <div class="header">
+        <span class="back-btn">←</span>
+        <h1>Add Word</h1>
+        <span class="delete-btn" style="visibility: hidden;">🗑️</span>
+    </div>
+
+    <div class="form-container">
+        <div class="form-row">
+            <span class="lang-flag">🇺🇸</span>
+            <div class="input-group">
+                <input type="text" class="text-input word-input" placeholder="English" autocomplete="off">
+                <input type="text" class="text-input pronunciation-input" placeholder="/pronunciation/" autocomplete="off">
+            </div>
+            <span class="speaker-btn">🔊</span>
+        </div>
+
+        <div class="form-row">
+            <span class="lang-flag">🇪🇸</span>
+            <div class="input-group">
+                <input type="text" class="text-input word-input" placeholder="Spanish" autocomplete="off">
+                <input type="text" class="text-input pronunciation-input" placeholder="/pronunciation/" autocomplete="off">
+            </div>
+            <span class="speaker-btn">🔊</span>
+        </div>
+
+        <div class="form-row">
+            <span class="lang-flag">🇫🇷</span>
+            <div class="input-group">
+                <input type="text" class="text-input word-input" placeholder="French" autocomplete="off">
+                <input type="text" class="text-input pronunciation-input" placeholder="/pronunciation/" autocomplete="off">
+            </div>
+            <span class="speaker-btn">🔊</span>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button class="save-btn">Save Word</button>
+    </div>
+
+    <script>
+        const backBtn = document.querySelector('.back-btn');
+        const saveBtn = document.querySelector('.save-btn');
+        const wordInputs = document.querySelectorAll('.word-input');
+        const speakerBtns = document.querySelectorAll('.speaker-btn');
+        const header = document.querySelector('.header h1');
+        const deleteBtn = document.querySelector('.delete-btn');
+
+        // Check if we're in edit mode
+        const isEditMode = window.location.hash === '#edit';
+
+        if (isEditMode) {
+            header.textContent = 'Edit Word';
+            deleteBtn.style.visibility = 'visible';
+
+            // Populate with example data
+            const allInputs = document.querySelectorAll('.text-input');
+            allInputs[0].value = 'Hello';
+            allInputs[1].value = '/həˈloʊ/';
+            allInputs[2].value = 'Hola';
+            allInputs[3].value = '/ˈola/';
+            allInputs[4].value = 'Bonjour';
+            allInputs[5].value = '/bɔ̃ʒuʁ/';
+
+            speakerBtns.forEach(btn => btn.classList.add('active'));
+        }
+
+        // Enable save button when all words filled
+        function checkFormValidity() {
+            const hasAllWords = Array.from(wordInputs).every(input => input.value.trim().length > 0);
+            saveBtn.disabled = !hasAllWords;
+
+            // Update speaker buttons based on pronunciation
+            document.querySelectorAll('.form-row').forEach(row => {
+                const wordInput = row.querySelector('.word-input');
+                const speaker = row.querySelector('.speaker-btn');
+                speaker.classList.toggle('active', wordInput.value.trim().length > 0);
+            });
+        }
+
+        wordInputs.forEach(input => {
+            input.addEventListener('input', checkFormValidity);
+        });
+
+        speakerBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.classList.contains('active')) {
+                    alert('Text-to-speech would play here');
+                }
+            });
+        });
+
+        checkFormValidity();
+
+        backBtn.addEventListener('click', () => {
+            alert('Navigate back');
+        });
+
+        saveBtn.addEventListener('click', () => {
+            alert('Word saved!');
+        });
+
+        deleteBtn.addEventListener('click', () => {
+            if (confirm('Delete this word?')) {
+                alert('Word deleted');
+            }
+        });
+    </script>
+    </div>
+</body>
+</html>

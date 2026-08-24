@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dictionary - Compact View</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #fafafa;
+            overflow: hidden;
+        }
+
+        /* Desktop wrapper */
+        @media (min-width: 768px) {
+            body {
+                align-items: center;
+                justify-content: center;
+                background: #e8e8e8;
+            }
+
+            .app-container {
+                width: 100%;
+                max-width: 480px;
+                height: 90vh;
+                max-height: 800px;
+                display: flex;
+                flex-direction: column;
+                background: white;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .results-container {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            background: white;
+        }
+
+        .result-item {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 16px 20px;
+            transition: background 0.2s;
+        }
+
+        .result-item:active {
+            background: #f8f9fa;
+        }
+
+        .translations {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .translation-row {
+            display: grid;
+            grid-template-columns: 24px 1fr auto;
+            align-items: baseline;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .translation-row.matched {
+            background: #f0f4ff;
+        }
+
+        .lang-flag {
+            font-size: 16px;
+        }
+
+        .translation-text {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .translation-row.matched .translation-text {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .pronunciation {
+            font-size: 13px;
+            color: #999;
+            font-style: italic;
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #aaa;
+        }
+
+        .empty-state-icon {
+            font-size: 56px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .search-container {
+            background: white;
+            padding: 12px 20px 32px;
+            border-top: 1px solid #e8e8e8;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+            flex-shrink: 0;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 2px solid #e8e8e8;
+            border-radius: 10px;
+            outline: none;
+            transition: all 0.2s;
+            background: #fafafa;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            background: white;
+        }
+
+        .search-btn {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-btn:active {
+            transform: scale(0.95);
+        }
+
+        @supports (padding: max(0px)) {
+            .header {
+                padding-top: max(16px, env(safe-area-inset-top));
+            }
+            .search-container {
+                padding-bottom: max(32px, env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+    <div class="header">
+        <h1>Trilingual Dictionary</h1>
+    </div>
+
+    <div class="results-container">
+        <div class="empty-state">
+            <div class="empty-state-icon">📖</div>
+            <p>Search for any word</p>
+        </div>
+
+        <!-- Example results (hidden by default) -->
+        <div class="result-item" style="display: none;">
+            <div class="translations">
+                <div class="translation-row matched">
+                    <span class="lang-flag">🇺🇸</span>
+                    <span class="translation-text">Hello</span>
+                    <span class="pronunciation">/həˈloʊ/</span>
+                </div>
+                <div class="translation-row">
+                    <span class="lang-flag">🇪🇸</span>
+                    <span class="translation-text">Hola</span>
+                    <span class="pronunciation">/ˈola/</span>
+                </div>
+                <div class="translation-row">
+                    <span class="lang-flag">🇫🇷</span>
+                    <span class="translation-text">Bonjour</span>
+                    <span class="pronunciation">/bɔ̃ʒuʁ/</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="result-item" style="display: none;">
+            <div class="translations">
+                <div class="translation-row">
+                    <span class="lang-flag">🇺🇸</span>
+                    <span class="translation-text">Book</span>
+                    <span class="pronunciation">/bʊk/</span>
+                </div>
+                <div class="translation-row matched">
+                    <span class="lang-flag">🇪🇸</span>
+                    <span class="translation-text">Libro</span>
+                    <span class="pronunciation">/ˈlibɾo/</span>
+                </div>
+                <div class="translation-row">
+                    <span class="lang-flag">🇫🇷</span>
+                    <span class="translation-text">Livre</span>
+                    <span class="pronunciation">/livʁ/</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="result-item" style="display: none;">
+            <div class="translations">
+                <div class="translation-row">
+                    <span class="lang-flag">🇺🇸</span>
+                    <span class="translation-text">Water</span>
+                    <span class="pronunciation">/ˈwɔːtər/</span>
+                </div>
+                <div class="translation-row">
+                    <span class="lang-flag">🇪🇸</span>
+                    <span class="translation-text">Agua</span>
+                    <span class="pronunciation">/ˈaɣwa/</span>
+                </div>
+                <div class="translation-row matched">
+                    <span class="lang-flag">🇫🇷</span>
+                    <span class="translation-text">Eau</span>
+                    <span class="pronunciation">/o/</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="result-item" style="display: none;">
+            <div class="translations">
+                <div class="translation-row matched">
+                    <span class="lang-flag">🇺🇸</span>
+                    <span class="translation-text">Thank you</span>
+                    <span class="pronunciation">/θæŋk juː/</span>
+                </div>
+                <div class="translation-row">
+                    <span class="lang-flag">🇪🇸</span>
+                    <span class="translation-text">Gracias</span>
+                    <span class="pronunciation">/ˈɡɾasjas/</span>
+                </div>
+                <div class="translation-row">
+                    <span class="lang-flag">🇫🇷</span>
+                    <span class="translation-text">Merci</span>
+                    <span class="pronunciation">/mɛʁsi/</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="result-item" style="display: none;">
+            <div class="translations">
+                <div class="translation-row">
+                    <span class="lang-flag">🇺🇸</span>
+                    <span class="translation-text">Good morning</span>
+                    <span class="pronunciation">/ɡʊd ˈmɔːrnɪŋ/</span>
+                </div>
+                <div class="translation-row">
+                    <span class="lang-flag">🇪🇸</span>
+                    <span class="translation-text">Buenos días</span>
+                    <span class="pronunciation">/ˈbwenos ˈdias/</span>
+                </div>
+                <div class="translation-row matched">
+                    <span class="lang-flag">🇫🇷</span>
+                    <span class="translation-text">Bonjour</span>
+                    <span class="pronunciation">/bɔ̃ʒuʁ/</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="Type a word to search..." autocomplete="off">
+            <button class="search-btn">🔍</button>
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.querySelector('.search-input');
+        const searchBtn = document.querySelector('.search-btn');
+        const emptyState = document.querySelector('.empty-state');
+        const resultItems = document.querySelectorAll('.result-item');
+
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query) {
+                emptyState.style.display = 'none';
+                resultItems.forEach(item => item.style.display = 'block');
+            } else {
+                emptyState.style.display = 'block';
+                resultItems.forEach(item => item.style.display = 'none');
+            }
+        }
+
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+    </script>
+    </div>
+</body>
+</html>
