@@ -1,16 +1,14 @@
 {
   "name": "flashcards",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=24.0.0"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro",
-    "start": "node ./dist/server/entry.mjs"
+    "dev": "cross-env APP_MODE=development astro dev",
+    "build": "cross-env APP_MODE=production astro build",
+    "astro": "astro"
   },
   "dependencies": {
     "@astrojs/node": "^11.1.4",
@@ -26,6 +24,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
+    "cross-env": "^10.1.0",
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^6.0.3"

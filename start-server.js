@@ -1,5 +1,7 @@
 process.env.ASTRO_NODE_AUTOSTART = "disabled";
 
+// TODO: logging
+
 import { startServer } from "./dist/server/entry.mjs";
 import { db } from "./src/lib/db";
 
