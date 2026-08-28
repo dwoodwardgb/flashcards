@@ -1,0 +1,9 @@
+- [ ] deploy (and get that working)
+- [ ] setup drizzle, sessions, users
+  - Use better-auth with advanced join and a preferences query in customSession
+  - [ ] Decide on password or passkeys
+- [ ] setup theme preference crud
+- [ ] implement layouts
+- [ ] implement functionality
+- [ ] research algorithm for remembering
+
