@@ -1,26 +1,39 @@
 ---
-import '../styles/global.css';
-import WebVitals from '../components/WebVitals.astro'
-const { title } = Astro.props
-import { WEB_VITALS } from 'astro:env/server';
+import "../styles/global.css";
+import WebVitals from "../components/WebVitals.astro";
+import { WEB_VITALS } from "astro:env/server";
+
+const { title } = Astro.props;
+const { isDark } = Astro.locals;
 ---
-<html lang="en">
+
+<html lang="en" class:list={{ dark: isDark }}>
   <head>
+    <script is:inline type="module">
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      document.documentElement.classList.toggle("dark", mediaQuery.matches);
+
+      mediaQuery.addEventListener(
+        "change",
+        function onSystemThemeChange(event) {
+          document.documentElement.classList.toggle("dark", event.matches);
+        },
+      );
+    </script>
+
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body>
-    <header>
-    </header>
-<main>
-    <slot />
-</main>
+  <body class="dark:bg-gray-950 dark:text-white">
+    <header></header>
+    <main>
+      <slot />
+    </main>
     <footer></footer>
 
     {WEB_VITALS && <WebVitals />}
   </body>
 </html>
-
