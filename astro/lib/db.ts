@@ -1,5 +1,10 @@
+// TODO: move to src
 import { DatabaseSync } from "node:sqlite";
 import path from "node:path";
+
+declare global {
+  var __shutdownHooks: Array<() => void | Promise<void>> | undefined;
+}
 
 const DB_PATH =
   process.env.VITALS_DB_PATH ?? path.join(process.cwd(), "vitals.db");
@@ -35,3 +40,13 @@ export const listVitals = db.prepare(`
   FROM web_vitals
   ORDER BY created_at DESC
 `);
+
+let dbClosed = false;
+
+globalThis.__shutdownHooks ??= [];
+globalThis.__shutdownHooks.push(async () => {
+  if (dbClosed) return;
+  dbClosed = true;
+  db.close();
+  console.log("Vitals DB closed");
+});

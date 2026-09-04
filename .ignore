@@ -1,3 +1,11 @@
-dist
 node_modules
+
+# TODO: figure out which
+dist
+astro/dist
+
+!.gitignore
+!.env
+!.env.local
+
 

@@ -10,6 +10,8 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
+# RUN corepack enable && corepack prepare pnpm@latest --activate
+
 # ==========================================
 # Stage 2: Production dependencies
 # ==========================================
@@ -38,6 +40,7 @@ COPY --from=builder --chown=node:node /app/docker-entrypoint.sh ./
 
 ENV NODE_ENV=production
 ENV APP_MODE=production
+ENV HOST=0.0.0.0
 
 # Run as root initially so the entrypoint can chown dirs, 
 # then the entrypoint drops privileges to 'node' using gosu.

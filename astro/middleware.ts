@@ -1,3 +1,4 @@
+// TODO: move to fastify
 import { defineMiddleware } from "astro:middleware";
 
 declare global {

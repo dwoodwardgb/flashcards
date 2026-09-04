@@ -1,0 +1,35 @@
+#
+# https://fly.io/docs/reference/configuration/
+#
+
+app = 'flashcards-spring-violet-2228'
+primary_region = 'ord'
+
+[build]
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 1024
+
+[mounts]
+  source = 'data'
+  destination = '/mnt/data'
+
+[env]
+  HOST = '0.0.0.0'
+  PORT = '8080'
+  DB_URL = '/mnt/data/prod.db'
+  METRICS_DB_URL = '/mnt/data/metrics.db'
+  AUDIO_FILES_DIR = '/mnt/data/audio'
+  TTS_GAPI_KEY_URL = '/mnt/data/second-self-314011-ad468e29abfa.json'
+

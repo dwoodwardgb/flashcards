@@ -1,0 +1,33 @@
+---
+// Force Astro to build this as a static HTML file for Fastify to serve
+export const prerender = true;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Server Error (500)</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        text-align: center;
+        padding: 4rem 2rem;
+        background: #fff5f5;
+        color: #9b2c2c;
+      }
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+      p {
+        color: #4a5568;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>500 - Internal Server Error</h1>
+    <p>Something went wrong on our server. We are looking into it.</p>
+  </body>
+</html>

@@ -1,7 +1,7 @@
-# build output
-dist/
-# generated types
-.astro/
+# TODO: figure out which we need
+.astro
+astro/.astro/
+astro/dist/
 
 # dependencies
 node_modules/
@@ -15,7 +15,6 @@ pnpm-debug.log*
 
 # environment variables
 .env
-.env.production
 
 # macOS-specific files
 .DS_Store
@@ -24,5 +23,8 @@ pnpm-debug.log*
 .idea/
 
 # runtime database
-vitals.db
-vitals.db-*
+app.db
+metrics.db
+
+data
+

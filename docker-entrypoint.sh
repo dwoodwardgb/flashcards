@@ -6,6 +6,10 @@ db_dir=$(dirname $DATABASE_URL)
 mkdir -p $db_dir
 chown -R node:node $db_dir
 
+metrics_db_dir=$(dirname $METRICS_DATABASE_URL)
+mkdir -p $metrics_db_dir
+chown -R node:node $metrics_db_dir
+
 # ensure data dir exists and belongs to node
 audio_dir=$(dirname $AUDIO_FILES_DIR)
 mkdir -p $audio_dir

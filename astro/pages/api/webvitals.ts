@@ -1,3 +1,4 @@
+// TODO: move to fastify
 import type { APIRoute } from "astro";
 import { randomUUID } from "node:crypto";
 import { insertVital } from "../../lib/db";
