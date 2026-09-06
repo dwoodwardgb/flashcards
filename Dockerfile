@@ -4,9 +4,10 @@
 FROM node:24-slim AS builder
 WORKDIR /app
 
-# Leverage layer caching: only reinstall if package files change
+# only reinstall if package files change
 COPY package.json package-lock.json ./
 RUN npm ci
+
 COPY . .
 RUN npm run build
 
@@ -16,7 +17,7 @@ RUN npm run build
 FROM node:24-slim AS prod-deps
 WORKDIR /app
 
-# Fresh install of production deps only (avoids fragile `npm prune`)
+# Fresh install of production deps only
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
@@ -35,12 +36,10 @@ COPY --from=builder --chown=node:node /app/package.json ./
 COPY --from=builder --chown=node:node /app/start-server.js ./
 COPY --from=builder --chown=node:node /app/migrate-up.js ./
 COPY --from=builder --chown=node:node /app/docker-entrypoint.sh ./
-
-ENV NODE_ENV=production
-ENV APP_MODE=production
+COPY --from=builder --chown=node:node /app/.env.production ./
 
 # Run as root initially so the entrypoint can chown dirs, 
 # then the entrypoint drops privileges to 'node' using gosu.
 ENTRYPOINT ["./docker-entrypoint.sh"]
-CMD ["node", "./start-server.js"]
+CMD ["node", "--env-file=.env.production", "./start-server.js"]
 

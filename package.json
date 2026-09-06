@@ -6,8 +6,8 @@
     "node": ">=24.0.0"
   },
   "scripts": {
-    "dev": "cross-env APP_MODE=development astro dev",
-    "build": "cross-env APP_MODE=production astro build",
+    "dev": "node --env-file=.env.development ./node_modules/.bin/astro dev",
+    "build": "node --env-file=.env.production ./node_modules/.bin/astro build",
     "astro": "astro"
   },
   "dependencies": {
@@ -17,6 +17,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "astro": "^7.2.4",
+    "http-graceful-shutdown": "^4.0.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "tailwindcss": "^4.3.3",
@@ -28,5 +29,8 @@
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^6.0.3"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
   }
 }

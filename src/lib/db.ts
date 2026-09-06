@@ -1,10 +1,11 @@
 import { DatabaseSync } from "node:sqlite";
-import path from "node:path";
+import { METRICS_DB_URL } from "astro:env/server";
 
-const DB_PATH =
-  process.env.VITALS_DB_PATH ?? path.join(process.cwd(), "vitals.db");
+declare global {
+  var __shutdownHooks: Array<() => void | Promise<void>> | undefined;
+}
 
-export const db = new DatabaseSync(DB_PATH);
+export const db = new DatabaseSync(METRICS_DB_URL);
 
 db.exec(`
   PRAGMA foreign_keys = ON;
@@ -35,3 +36,14 @@ export const listVitals = db.prepare(`
   FROM web_vitals
   ORDER BY created_at DESC
 `);
+
+// TODO: insert HMR hook, etc
+
+let dbClosed = false;
+globalThis.__shutdownHooks ??= [];
+globalThis.__shutdownHooks.push(() => {
+  if (dbClosed) return;
+  dbClosed = true;
+  db.close();
+  console.log("Vitals DB closed");
+});

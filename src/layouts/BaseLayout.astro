@@ -7,7 +7,7 @@ const { title } = Astro.props;
 const { isDark } = Astro.locals;
 ---
 
-<html lang="en" class:list={{ dark: isDark }}>
+<html lang="en" class:list={["min-h-svh", { dark: isDark }]}>
   <head>
     <script is:inline type="module">
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -27,7 +27,7 @@ const { isDark } = Astro.locals;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body class="dark:bg-gray-950 dark:text-white">
+  <body class="min-h-svh dark:bg-gray-950 dark:text-white">
     <header></header>
     <main>
       <slot />

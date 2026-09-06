@@ -1,20 +1,24 @@
-process.env.ASTRO_NODE_AUTOSTART = "disabled";
-
-// TODO: logging
+import gracefulShutdown from "http-graceful-shutdown";
 
 import { startServer } from "./dist/server/entry.mjs";
-import { db } from "./src/lib/db";
 
 const server = startServer();
 
-const handleShutdown = () => {
-  console.log("Received shutdown signal, closing server...");
-  db.close();
-  server.server.stop(() => {
-    console.log("Server closed cleanly.");
-    process.exit(0);
-  });
-};
-
-process.on("SIGTERM", handleShutdown);
-process.on("SIGINT", handleShutdown);
+gracefulShutdown(server.server.server, {
+  signals: "SIGINT SIGTERM",
+  timeout: 10_000,
+  onShutdown: async (signal) => {
+    console.log(`Cleanup initiated by ${signal}`);
+    const shutdownPromises = [];
+    for (const hook of globalThis.__shutdownHooks) {
+      const res = hook();
+      if (res instanceof Promise) {
+        shutdownPromises.push(res);
+      }
+    }
+    await Promise.allSettled(shutdownPromises);
+  },
+  finally: () => {
+    console.log("Server gracefully shut down.");
+  },
+});
