@@ -34,7 +34,7 @@ COPY --from=prod-deps --chown=node:node /app/node_modules ./node_modules
 COPY --from=builder --chown=node:node /app/dist ./dist
 COPY --from=builder --chown=node:node /app/package.json ./
 COPY --from=builder --chown=node:node /app/start-server.js ./
-COPY --from=builder --chown=node:node /app/migrate-up.js ./
+COPY --from=builder --chown=node:node /app/migrate-all.js ./
 COPY --from=builder --chown=node:node /app/docker-entrypoint.sh ./
 COPY --from=builder --chown=node:node /app/.env.production ./
 

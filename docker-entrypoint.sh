@@ -19,7 +19,7 @@ metrics_db_dir=$(dirname $METRICS_DB_URL)
 mkdir -p $metrics_db_dir
 chown -R node:node $metrics_db_dir
 
-node ./migrate-up.js
+node ./migrate-all.js
 
 # execute the main command as the user "node", see Dockerfile CMD
 exec gosu node "$@"

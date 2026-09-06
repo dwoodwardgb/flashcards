@@ -26,9 +26,3 @@ primary_region = 'ord'
   destination = '/mnt/data'
 
 [env]
-  HOST = '0.0.0.0'
-  PORT = '8080'
-  DB_URL = '/mnt/data/prod.db'
-  METRICS_DB_URL = '/mnt/data/metrics.db'
-  AUDIO_FILES_DIR = '/mnt/data/audio'
-  TTS_GAPI_KEY_URL = '/mnt/data/second-self-314011-ad468e29abfa.json'

@@ -6,9 +6,17 @@
     "node": ">=24.0.0"
   },
   "scripts": {
-    "dev": "node --env-file=.env.development ./node_modules/.bin/astro dev",
-    "build": "node --env-file=.env.production ./node_modules/.bin/astro build",
-    "astro": "astro"
+    "dev": "astro dev",
+    "build": "astro build",
+    "astro": "astro",
+    "db:generate": "npm run db:generate:main && npm run db:generate:metrics",
+    "db:generate:main": "drizzle-kit generate --config=drizzle.main.config.js",
+    "db:generate:metrics": "drizzle-kit generate --config=drizzle.metrics.config.js",
+    "db:migrate": "npm run db:migrate:main && npm run db:migrate:metrics",
+    "db:migrate:main": "drizzle-kit migrate --config=drizzle.main.config.js",
+    "db:migrate:metrics": "drizzle-kit migrate --config=drizzle.metrics.config.js",
+    "db:studio:main": "drizzle-kit studio --config=drizzle.main.config.js",
+    "db:studio:metrics": "drizzle-kit studio --config=drizzle.metrics.config.js"
   },
   "dependencies": {
     "@astrojs/node": "^11.1.4",
@@ -17,6 +25,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "astro": "^7.2.4",
+    "drizzle-orm": "^1.0.0-rc.4",
     "http-graceful-shutdown": "^4.0.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
@@ -25,12 +34,13 @@
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
-    "cross-env": "^10.1.0",
+    "drizzle-kit": "^1.0.0-rc.4",
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vite": "^8.2.2"
   },
   "allowScripts": {
-    "esbuild@0.28.2": true
+    "esbuild": true
   }
 }

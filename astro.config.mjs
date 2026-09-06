@@ -8,6 +8,7 @@ import node from "@astrojs/node";
 export default defineConfig({
   env: {
     schema: {
+      DB_URL: envField.string({ context: "server", access: "secret" }),
       WEB_VITALS: envField.boolean({
         context: "server",
         access: "secret",
